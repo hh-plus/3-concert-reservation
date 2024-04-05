@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int               @id @default(autoincrement())
+  name            String
+  token           String
+  cash            Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  ConcertDateUser ConcertDateUser[]
+}
+
+enum payStatus {
+  PAID
+  UNPAID
+}
+
+model ConcertDateUser {
+  id Int @id @default(autoincrement())
+
+  concertDateId Int
+  concertDate   ConcertDate @relation(fields: [concertDateId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  payStatus payStatus @default(UNPAID)
+}
+
+model Concert {
+  id       Int    @id @default(autoincrement())
+  maxSeats Int    @default(0)
+  name     String
+
+  price Int @default(0)
+
+  ConcertDate ConcertDate[]
+}
+
+model ConcertDate {
+  id   Int      @id @default(autoincrement())
+  date DateTime
+
+  concertId       Int
+  concert         Concert           @relation(fields: [concertId], references: [id])
+  ConcertDateUser ConcertDateUser[]
+}

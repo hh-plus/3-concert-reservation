@@ -13,6 +13,7 @@ const NESTIA_CONFIG: INestiaConfig = {
     //     type: VersioningType.URI,
     //     prefix: "v",
     // })
+
     return app;
   },
   swagger: {
@@ -32,5 +33,6 @@ const NESTIA_CONFIG: INestiaConfig = {
     ],
     beautify: true,
   },
+  output: 'src/api',
 };
 export default NESTIA_CONFIG;
