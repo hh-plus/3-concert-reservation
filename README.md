@@ -2,7 +2,91 @@
 
 [swagger-docs](https://app.swaggerhub.com/apis-docs/rnjsdud980/reserve-concert/0.0.1)
 
-<img width="1456" alt="Sequence Diagram - Template (Community)" src="https://github.com/hh-plus/3-concert-reservation/assets/71562311/3f46dc2d-34d1-4dc6-bbd5-2df5ca38bfb8">
+### 토큰 발급
+```mermaid
+sequenceDiagram
+    actor C AS Client 
+    participant S AS Server
+    
+    C->>S: 토큰 유효성 검증 요청
+    
+    S--> S : 이미 발급받은 토큰이 있는지 확인
+    S--> S : 유효한 토큰인지 검증 (현재 입장하려는 콘서트에 부합하는 토큰을 가지고 있는지)
+    
+    note right of C: 수용능력 내에 있는지 확인
+    alt 수용 능력 내
+	    S-->>C: 바로 입장 가능한 유효 토큰 발급
+    else 수용 능력을 벗어남
+	    S-->>C:  현재 대기열의 마지막 번호에서 1을 더한 토큰 발급
+    end
+    
+    note right of C: response
+    alt 토큰이 없는 경우
+    	S-->>C : 토큰을 새로 발급
+    else 토큰 존재
+	    S-->>C : 현재 순번, 대기 시간 등을 반환
+    else 유효하지 않은 토큰
+	    S-->>C : Invalid Error
+    end
+
+```
+
+### 콘서트 예약
+```mermaid
+sequenceDiagram
+    actor C AS Client 
+    participant S AS Server
+    note right of C: 모든 요청은 토큰 검증을 거친다. 
+    note right of C: 대기순번이 0인지 확인하고 0이 아니라면 새로운 토큰을 발급시킨다.
+    
+    note left of C: 일정 조회
+    C->>S: 콘서트 일정 조회 요청
+    S->>S: 날짜 정보 조회
+   
+    S-->>C : 신청 가능한 일정 조회
+    
+    note left of C: 좌석 정보 조회
+    C->> S: 좌석정보 조회 요청
+    S->>S: 좌석 정보 조회
+    S-->>C : 사용 가능 좌석 조회
+    
+    note left of C: 좌석 예약
+    C->> S: 좌석 예약 요청
+    alt 좌석이 존재함
+	  S ->> S : 좌석 예약 처리(5분)
+	  S ->> C : 좌석 예약 성공 반환
+	  else 좌석이 존재하지 않음
+	  S ->> C : 좌석 예약 실패 반환
+    end
+    
+    
+	    
+    
+```
+
+### 결제 처리
+```mermaid
+sequenceDiagram
+    actor C AS Client 
+    participant S AS Server
+    note right of C: 모든 요청은 토큰 검증을 거친다. 
+    note right of C: 대기순번이 0인지 확인하고 0이 아니라면 새로운 토큰을 발급시킨다.
+    
+    note left of C: 결제 처리
+    S --> S : 좌석의 예약과 결제하려는 좌석의 유효성 처리
+    alt 유효하지 않은 좌석
+    S -->> C : 좌석 유효성 에러
+    end
+    
+    S --> S : 잔액 검증
+    alt 잔액이 충분하지 않음
+    S -->> C : 잔액 부족 에러
+    end
+    
+    S --> S : 결제 처리, 토큰 소멸, 포인트 사용 히스토리 작성
+    S --> C : 결제 성공 응답
+    
+```
 
 ### ERD
 <img width="552" alt="스크린샷 2024-04-05 오후 12 30 10" src="https://github.com/hh-plus/3-concert-reservation/assets/71562311/3f27bf7b-0c8b-430a-aa57-f695bbb7a81b">
