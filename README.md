@@ -102,7 +102,10 @@ sequenceDiagram
 ```
 
 ### ERD
-![스크린샷 2024-04-08 오후 7 43 36](https://github.com/hh-plus/3-concert-reservation/assets/71562311/5f48d230-315d-47ef-8225-b935d16752f1)
+![스크린샷 2024-04-08 오후 7 51 19](https://github.com/hh-plus/3-concert-reservation/assets/71562311/9147b241-463a-4270-92e4-74cb9b05401f)
+
+
+
 
 
 ### 마일스톤
