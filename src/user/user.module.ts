@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { GetUserTokenService } from './services/get-user-token.service';
+import { UserTokenService } from './services/get-user-token.service';
 import { UserController } from './user.controller';
 import { UserRepositoryPort } from './services/port/user.repository.port';
 import { UserTokenRepository } from './repositories/user-token.repository';
@@ -18,7 +18,7 @@ import { JwtModule } from '@nestjs/jwt';
   controllers: [UserController],
   providers: [
     PrismaService,
-    GetUserTokenService,
+    UserTokenService,
     {
       provide: UserRepositoryPort,
       useClass: UserTokenRepository,
