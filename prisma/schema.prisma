@@ -13,13 +13,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model UserToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  userId    Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+enum cashLogType {
+  USE
+  CHARGE
+}
+
+model CashLog {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  amount Int
+  type   cashLogType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
 model User {
-  id              Int               @id @default(autoincrement())
-  name            String
-  token           String
-  cash            Int               @default(0)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  cash      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  CashLog         CashLog[]
   ConcertDateUser ConcertDateUser[]
 }
 
@@ -37,7 +68,14 @@ model ConcertDateUser {
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
+  seat Int @default(0)
+
   payStatus payStatus @default(UNPAID)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([concertDateId])
 }
 
 model Concert {
@@ -57,4 +95,9 @@ model ConcertDate {
   concertId       Int
   concert         Concert           @relation(fields: [concertId], references: [id])
   ConcertDateUser ConcertDateUser[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([concertId])
 }
