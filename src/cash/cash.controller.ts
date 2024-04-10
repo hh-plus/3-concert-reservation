@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CashService } from './cash.service';
+import { ChargeCashService } from './services/cash.service';
 import { GetCashResDto } from './dto/getCash.dto';
 import { ChargeCashReqBodyDto } from './dto/charge-cash.dto';
 
 @Controller('cash')
 export class CashController {
-  constructor(private readonly cashService: CashService) {}
+  constructor(private readonly cashService: ChargeCashService) {}
 
   /**
    * 유저가 가진 캐시 조회하기
