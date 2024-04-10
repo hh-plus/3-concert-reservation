@@ -15,7 +15,7 @@ datasource db {
 
 model UserToken {
   id        Int      @id @default(autoincrement())
-  token     String
+  isPass    Boolean  @default(false)
   userId    Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

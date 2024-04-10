@@ -1,7 +1,6 @@
 import { User, UserToken } from '@prisma/client';
 
 export abstract class UserRepositoryPort {
-  abstract getOneByUserId(userId: number): Promise<UserToken | null>;
   abstract create(userId: number): Promise<UserToken>;
   abstract getAll(): Promise<UserToken[]>;
   abstract getCountByUserTokenId(userTokenId: number): Promise<number>;
