@@ -5,6 +5,7 @@ import { UserRepositoryPort } from './services/port/user.repository.port';
 import { UserTokenRepository } from './repositories/user-token.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtManageService } from './services/jwt.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [
     PrismaService,
     UserTokenService,
+    JwtManageService,
     {
       provide: UserRepositoryPort,
       useClass: UserTokenRepository,

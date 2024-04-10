@@ -3,15 +3,16 @@ import { UserTokenService } from './get-user-token.service';
 import { UserRepositoryPort } from './port/user.repository.port';
 import { JwtService } from '@nestjs/jwt';
 import { UserToken } from '@prisma/client';
+import { JwtManageService } from './jwt.service';
 
 describe('UserService', () => {
   let service: UserTokenService;
   let userRepositoryPort: UserRepositoryPort;
-  let jwtService: JwtService;
+  let jwtService: JwtManageService;
 
   beforeEach(async () => {
     userRepositoryPort = {
-      getOne: jest.fn(async (userId: number): Promise<UserToken> => {
+      getOneByUserId: jest.fn(async (userId: number): Promise<UserToken> => {
         return {
           id: 1,
           token: 'token',
@@ -20,44 +21,35 @@ describe('UserService', () => {
           updatedAt: new Date(),
         };
       }),
-      getAll: jest.fn(),
+      getAll: jest.fn().mockResolvedValue([]),
       create: jest.fn(),
+      getCountByUserTokenId: jest.fn(),
     };
 
-    service = new UserTokenService(userRepositoryPort);
+    jwtService = {
+      sign: jest.fn().mockReturnValue('token'),
+    } as any;
+
+    service = new UserTokenService(jwtService, userRepositoryPort);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getUserToken', () => {
-    it('repository의 getUserToken을 호출한다.', () => {
-      service.getOneByUserId(1);
-      expect(userRepositoryPort.getOne).toBeCalled();
-    });
-  });
-
-  describe('createUserToken', () => {
-    it('repository의 createUserToken을 호출한다.', () => {
-      service.create(1);
-      expect(userRepositoryPort.create).toBeCalled();
-    });
-  });
-
-  describe('createNewToken', () => {
-    it('jwt token을 생성한다.', () => {});
-  });
-
   describe('getOrCreate', () => {
     it('getUserToken을 호출한다.', () => {
       service.getOrCreate(1);
-      expect(userRepositoryPort.getOne).toBeCalled();
+      expect(userRepositoryPort.getOneByUserId).toBeCalled();
     });
 
-    it('token이 없으면 새로운 token을 생성한다.', () => {
-      jest.spyOn(service, 'getOneByUserId').mockResolvedValue(null);
-      service.getOrCreate(1);
+    it('token이 없으면 새로운 token을 생성한다.', async () => {
+      userRepositoryPort.getOneByUserId = jest.fn().mockResolvedValue(null);
+      service.createNewToken = jest.fn().mockReturnValue('token');
+
+      await service.getOrCreate(1);
+      expect(userRepositoryPort.getAll).toBeCalled();
+      expect(service.createNewToken).toBeCalled();
       expect(userRepositoryPort.create).toBeCalled();
     });
   });
