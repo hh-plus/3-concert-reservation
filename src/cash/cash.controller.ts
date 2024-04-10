@@ -1,11 +1,15 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ChargeCashService } from './services/cash.service';
+import { ChargeCashService } from './services/charge/charge-cash.service';
 import { GetCashResDto } from './dto/getCash.dto';
 import { ChargeCashReqBodyDto } from './dto/charge-cash.dto';
+import { GetOneCashService } from './services/get-one/get-one.service';
 
 @Controller('cash')
 export class CashController {
-  constructor(private readonly cashService: ChargeCashService) {}
+  constructor(
+    private readonly getCashService: GetOneCashService,
+    private readonly chargeCashService: ChargeCashService,
+  ) {}
 
   /**
    * 유저가 가진 캐시 조회하기
@@ -17,9 +21,7 @@ export class CashController {
    */
   @Get('/:userId')
   async getCash(@Param('userId') userId: number): Promise<GetCashResDto> {
-    return {
-      cash: 10000,
-    };
+    return await this.getCashService.getOne(userId);
   }
 
   /**
@@ -37,6 +39,6 @@ export class CashController {
     @Param('userId') userId: number,
     @Body() body: ChargeCashReqBodyDto,
   ): Promise<GetCashResDto> {
-    return await this.cashService.chargeCash(userId, body.cash);
+    return await this.chargeCashService.chargeCash(userId, body.cash);
   }
 }

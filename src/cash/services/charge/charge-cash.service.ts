@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CashLogRepositoryPort, UserRepositoryPort } from './port/cash.port';
+import { CashLogRepositoryPort, UserRepositoryPort } from '../port/cash.port';
 import { User } from '@prisma/client';
 
 @Injectable()
