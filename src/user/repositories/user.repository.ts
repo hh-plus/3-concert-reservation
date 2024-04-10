@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
-export class CashRepository {
+export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getCash(userId: number): Promise<number> {
-    return 10000;
+  async getOne(userId: number) {
+    return this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
   }
-
-  async chargeCash(userId: number, cash: number): Promise<void> {}
 }

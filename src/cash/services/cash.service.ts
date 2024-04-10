@@ -3,12 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CashRepositoryPort } from './port/cash.port';
+import { CashLogRepositoryPort, UserRepositoryPort } from './port/cash.port';
 import { User } from '@prisma/client';
 
 @Injectable()
 export class ChargeCashService {
-  constructor(private readonly cashRepository: CashRepositoryPort) {}
+  constructor(
+    private readonly cashLogRepository: CashLogRepositoryPort,
+    private readonly userRepository: UserRepositoryPort,
+  ) {}
 
   validate(cash: number, user: User | null): void {
     if (!user) {
@@ -20,5 +23,15 @@ export class ChargeCashService {
     }
   }
 
-  async chargeCash(userId: number, cash: number): Promise<void> {}
+  async chargeCash(userId: number, cash: number): Promise<{ cash: number }> {
+    const user = await this.userRepository.getOne(userId);
+
+    this.validate(cash, user);
+
+    user.cash += cash;
+
+    await this.cashLogRepository.create(user.id, user.cash, 'CHARGE');
+
+    return { cash: user.cash };
+  }
 }

@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ChargeCashService } from './services/cash.service';
 import { CashController } from './cash.controller';
-import { CashRepository } from './repositories/cash.repository';
+import { CashLogRepository } from './repositories/cash-log.repository';
 import { PrismaService } from 'prisma/prisma.service';
-import { CashRepositoryPort } from './services/port/cash.port';
+import {
+  CashLogRepositoryPort,
+  UserRepositoryPort,
+} from './services/port/cash.port';
+import { UserRepository } from 'src/user/repositories/user.repository';
 
 @Module({
   controllers: [CashController],
@@ -11,8 +15,12 @@ import { CashRepositoryPort } from './services/port/cash.port';
     PrismaService,
     ChargeCashService,
     {
-      provide: CashRepositoryPort,
-      useClass: CashRepository,
+      provide: CashLogRepositoryPort,
+      useClass: CashLogRepository,
+    },
+    {
+      provide: UserRepositoryPort,
+      useClass: UserRepository,
     },
   ],
 })

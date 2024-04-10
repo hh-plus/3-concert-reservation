@@ -37,8 +37,6 @@ export class CashController {
     @Param('userId') userId: number,
     @Body() body: ChargeCashReqBodyDto,
   ): Promise<GetCashResDto> {
-    return {
-      cash: 10000,
-    };
+    return await this.cashService.chargeCash(userId, body.cash);
   }
 }
