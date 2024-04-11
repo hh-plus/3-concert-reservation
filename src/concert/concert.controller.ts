@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { ConcertService } from './concert.service';
 
 import {
   ReserveConcertReqDto,
@@ -10,10 +9,13 @@ import { GetAvailableDateResDto } from './dto/get-available-date.dto';
 
 import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
 import { PayConcertReqBodyDto } from './dto/pay-concert.dto';
+import { GetAvailableDateService } from './services/get-available-date/get-available-date.service';
 
 @Controller('concert')
 export class ConcertController {
-  constructor(private readonly concertService: ConcertService) {}
+  constructor(
+    private readonly getAvailableDateService: GetAvailableDateService,
+  ) {}
 
   /**
    *
