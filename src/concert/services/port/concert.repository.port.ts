@@ -1,3 +1,3 @@
 export abstract class ConcertRepositoryPort {
-  abstract getAvailableDate(concertId: number): Promise<string[]>;
+  abstract getAvailableDate(concertId: number): Promise<{ date: Date }[]>;
 }

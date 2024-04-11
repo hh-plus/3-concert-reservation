@@ -5,6 +5,7 @@ import { GetAvailableDateService } from './services/get-available-date/get-avail
 import { ConcertRepositoryPort } from './services/port/concert.repository.port';
 import { ConcertRepository } from './repositories/concert.repository';
 import { PrismaService } from 'prisma/prisma.service';
+import { ConcertUseCase } from './repositories/concert.use-case';
 
 @Module({
   controllers: [ConcertController],
@@ -13,7 +14,7 @@ import { PrismaService } from 'prisma/prisma.service';
     GetAvailableDateService,
     {
       provide: ConcertRepositoryPort,
-      useClass: ConcertRepository,
+      useClass: ConcertUseCase,
     },
     ConcertRepository,
   ],
