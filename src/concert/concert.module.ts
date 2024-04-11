@@ -1,9 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ConcertService } from './concert.service';
+
 import { ConcertController } from './concert.controller';
+import { GetAvailableDateService } from './services/get-available-date/get-available-date.service';
+import { ConcertRepositoryPort } from './services/port/concert.repository.port';
+import { ConcertRepository } from './repositories/concert.repository';
 
 @Module({
   controllers: [ConcertController],
-  providers: [ConcertService]
+  providers: [
+    GetAvailableDateService,
+    {
+      provide: ConcertRepositoryPort,
+      useClass: ConcertRepository,
+    },
+    ConcertRepository,
+  ],
 })
 export class ConcertModule {}
