@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '@@prisma/prisma.service';
-import { ConcertUseCase } from './concert.use-case';
 
 @Injectable()
 export class ConcertRepository {

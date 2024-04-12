@@ -70,7 +70,7 @@
     "moduleNameMapper": {
       "^@@prisma/(.*)$": "<rootDir>/prisma/$1"
     },
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
