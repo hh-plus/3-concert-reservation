@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -20,6 +21,7 @@ import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
 import { PayConcertReqBodyDto } from './dto/pay-concert.dto';
 
 import { ConcertServicePort } from './adapters/concert.service.port';
+import { PassTokenGuard } from 'src/guard/pass-token/pass-token.guard';
 
 @Controller('concert')
 export class ConcertController {
@@ -33,9 +35,10 @@ export class ConcertController {
    * @description 콘서트 예약 가능한 날짜 조회
    * @param concertId
    * @throws 400 잘못 된 요청
-   * @throws 401 Bad Request
+   * @throws 401 접근 권한 없음
 
    */
+  @UseGuards(PassTokenGuard)
   @Get('/:concertId/available-date')
   async getAvailableDate(
     @Param('concertId', ParseIntPipe) concertId: number,

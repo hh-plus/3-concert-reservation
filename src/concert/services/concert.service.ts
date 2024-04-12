@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConcertUseCase } from '../repositories/concert.use-case';
 import { ConcertRepositoryPort } from '../adapters/concert.repository.port';
 
 @Injectable()
