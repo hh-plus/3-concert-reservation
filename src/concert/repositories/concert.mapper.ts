@@ -9,15 +9,10 @@ type GetConcertsIncludeType = Awaited<
 
 export class ConcertMapper {
   static mappingAvailableDate(concerts: GetConcertsIncludeType) {
-    return {
-      id: concerts.id,
-      maxSeats: concerts.maxSeats,
-      name: concerts.name,
-      ConcertDate: concerts.ConcertDate.reduce((acc: any, cur) => {
-        if (cur.ConcertDateUser.length <= concerts.maxSeats) {
-          return acc.push(cur.date);
-        }
-      }, []),
-    };
+    return concerts.ConcertDate.reduce((acc: any, cur) => {
+      if (cur.ConcertDateUser.length < concerts.maxSeats) {
+        acc.push({ date: cur.date });
+      }
+    }, []);
   }
 }
