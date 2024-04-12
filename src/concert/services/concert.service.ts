@@ -12,4 +12,11 @@ export class ConcertService implements ConcertServicePort {
   async getAvailableDate(concertId: number) {
     return await this.concertRepositoryPort.getAvailableDate(concertId);
   }
+
+  async getAvailableSeats(concertId: number, concertDateId: number) {
+    return await this.concertRepositoryPort.getAvailableSeats(
+      concertId,
+      concertDateId,
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConcertRepository } from './concert.repository';
+import { ConcertRepository } from '../repositories/concert.repository';
+import { ConcertDateUser } from '@prisma/client';
 
 type GetConcertsIncludeType = Awaited<
   ReturnType<
@@ -14,5 +15,16 @@ export class ConcertMapper {
         acc.push({ date: cur.date });
       }
     }, []);
+  }
+
+  static mappingAvailableSeats(maxSeats: number, seats: ConcertDateUser[]) {
+    const seatsNums: { seats: number[] } = { seats: [] };
+    for (let i = 1; i <= maxSeats; i++) {
+      if (seats.find((s) => s.seat === i)) {
+        continue;
+      }
+      seatsNums.seats.push(i);
+    }
+    return seatsNums;
   }
 }

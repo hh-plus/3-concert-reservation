@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
@@ -51,14 +52,20 @@ export class ConcertController {
    * @description 콘서트 예약 가능한 좌석 조회
    * @param concertId
    * @throws 400 잘못 된 요청
-   * @throws 401 Bad Request
+   * @throws 401 접근 권한 없음
    * @returns
    */
-  @Get('/:concertId/available-seats')
+  @Get('/:concertId/available-seats/:concertDateId')
   async getAvailableSeats(
-    @Param('concertId') concertId: number,
+    @Param('concertId', ParseIntPipe) concertId: number,
+    @Param('concertDateId', ParseIntPipe) concertDateId: number,
   ): Promise<GetAvailableSeatsResDto> {
-    return { seats: [1, 2, 3] };
+    return {
+      data: await this.concertService.getAvailableSeats(
+        concertId,
+        concertDateId,
+      ),
+    };
   }
 
   /** 콘서트 좌석 예약하기

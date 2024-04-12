@@ -1,3 +1,3 @@
 export interface GetAvailableSeatsResDto {
-  seats: number[];
+  data: { seats: number[] };
 }

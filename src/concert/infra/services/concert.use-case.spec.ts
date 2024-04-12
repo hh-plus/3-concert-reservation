@@ -1,5 +1,5 @@
 import { PrismaService } from '@@prisma/prisma.service';
-import { ConcertRepository } from './concert.repository';
+import { ConcertRepository } from '../repositories/concert.repository';
 import { ConcertUseCase } from './concert.use-case';
 import { ConcertMapper } from './concert.mapper';
 

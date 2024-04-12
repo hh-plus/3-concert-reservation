@@ -9,6 +9,7 @@ describe('ConcertService', () => {
   beforeEach(async () => {
     concertRepositoryPort = {
       getAvailableDate: jest.fn(),
+      getAvailableSeats: jest.fn(),
     };
 
     service = new ConcertService(concertRepositoryPort);
