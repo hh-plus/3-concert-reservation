@@ -1,3 +1,5 @@
 export interface GetAvailableDateResDto {
-  date: string[];
+  data: {
+    date: Date;
+  }[];
 }

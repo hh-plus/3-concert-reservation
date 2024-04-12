@@ -4,13 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { PrismaService } from '';
+import { PrismaService } from '@@prisma/prisma.service';
+import { ConcertUseCase } from './concert.use-case';
 
 @Injectable()
 export class ConcertRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getAvailableDate(concertId: number) {
+  async getConcertsIncludeConcertDate(concertId: number) {
     const concerts = await this.prismaService.concert.findUnique({
       where: {
         id: concertId,

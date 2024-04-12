@@ -21,6 +21,9 @@
       {
         "transform": "typia/lib/transform"
       }
-    ]
+    ],
+    "paths": {
+      "@@prisma/*": ["./prisma/*"]
+    }
   }
 }

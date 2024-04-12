@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
 import {
   ReserveConcertReqDto,
@@ -9,12 +18,14 @@ import { GetAvailableDateResDto } from './dto/get-available-date.dto';
 
 import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
 import { PayConcertReqBodyDto } from './dto/pay-concert.dto';
-import { GetAvailableDateService } from './services/get-available-date/get-available-date.service';
+
+import { ConcertServicePort } from './adapters/concert.service.port';
 
 @Controller('concert')
 export class ConcertController {
   constructor(
-    private readonly getAvailableDateService: GetAvailableDateService,
+    @Inject('concertServicePort')
+    private readonly concertService: ConcertServicePort,
   ) {}
 
   /**
@@ -27,9 +38,9 @@ export class ConcertController {
    */
   @Get('/:concertId/available-date')
   async getAvailableDate(
-    @Param('concertId') concertId: number,
+    @Param('concertId', ParseIntPipe) concertId: number,
   ): Promise<GetAvailableDateResDto> {
-    return { date: ['2021-01-01', '2021-01-02'] };
+    return { data: await this.concertService.getAvailableDate(concertId) };
   }
 
   /**
