@@ -1,4 +1,4 @@
-import { ConcertDateUserModel } from 'src/infrastructures/concert/models/concert-date-user';
+import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
 
 export class ConcertValidate {
   static checkFullSeats(

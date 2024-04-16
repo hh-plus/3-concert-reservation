@@ -1,6 +1,6 @@
-import { ConcertModel } from 'src/infrastructures/concert/models/concert';
-import { ConcertDateModel } from 'src/infrastructures/concert/models/concert-date';
-import { ConcertDateUserModel } from 'src/infrastructures/concert/models/concert-date-user';
+import { ConcertModel } from 'src/infrastructures/concerts/models/concert';
+import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
+import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
 import { ConcertValidate } from './validations/concert.validate';
 
 export class ConcertDomainService {

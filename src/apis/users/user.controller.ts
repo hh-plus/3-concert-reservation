@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Req } from '@nestjs/common';
-import { UserTokenService } from './services/get-user-token.service';
-import { GetTokenResDto } from './dto/getToken.dto';
+import { UserTokenService } from '../../applications/users/services/get-user-token.service';
+import { GetTokenResDto } from './dtos/getToken.dto';
 
 @Controller('user')
 export class UserController {
