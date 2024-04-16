@@ -1,10 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ConcertRepositoryPort } from './adapters/concert.repository.port';
 import { ConcertServicePort } from '../../apis/concerts/concert.service.port';
-import { ConcertDomainService } from 'src/domains/concert/concert.domain.service';
-import { NotFoundConcertException } from 'src/domains/concert/exceptions/not-found-concert.exception';
+import { ConcertDomainService } from 'src/domains/concerts/concert.domain.service';
+import { NotFoundConcertException } from 'src/domains/concerts/exceptions/not-found-concert.exception';
 import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
-import { ConcertValidate } from 'src/domains/concert/validations/concert.validate';
+import { ConcertValidate } from 'src/domains/concerts/validations/concert.validate';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {

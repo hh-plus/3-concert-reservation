@@ -1,4 +1,5 @@
 export interface GetTokenResDto {
-  token: string;
-  waitingNumber: number;
+  data: {
+    waitingNumber: number;
+  };
 }

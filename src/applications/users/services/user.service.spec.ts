@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserTokenService } from './get-user-token.service';
+import { UserService } from './user.service';
 import { UserRepositoryPort } from './port/user.repository.port';
 import { JwtService } from '@nestjs/jwt';
 import { UserToken } from '@prisma/client';
-import { JwtManageService } from './jwt.service';
+import { JwtManageService } from '../../../domains/users/jwt/jwt.service';
 import { ConflictException } from '@nestjs/common';
 
 describe('UserService', () => {
-  let service: UserTokenService;
+  let service: UserService;
   let userRepositoryPort: UserRepositoryPort;
   let jwtService: JwtManageService;
 
@@ -26,7 +26,7 @@ describe('UserService', () => {
       sign: jest.fn().mockReturnValue('token'),
     } as any;
 
-    service = new UserTokenService(jwtService, userRepositoryPort);
+    service = new UserService(jwtService, userRepositoryPort);
 
     service.createNewToken = jest.fn().mockReturnValue(token);
   });

@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UserTokenService } from '../../applications/users/services/get-user-token.service';
+import { UserService } from '../../applications/users/services/user.service';
 import { UserController } from './user.controller';
 import { UserRepositoryPort } from '../../applications/users/services/port/user.repository.port';
 import { UserTokenRepository } from '../../infrastructures/users/repositories/user-token.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtManageService } from '../../applications/users/services/jwt.service';
+import { JwtManageService } from '../../domains/users/jwt/jwt.service';
+import { UserDomainService } from 'src/domains/users/user.domain.service';
 
 @Module({
   imports: [
@@ -19,8 +20,12 @@ import { JwtManageService } from '../../applications/users/services/jwt.service'
   controllers: [UserController],
   providers: [
     PrismaService,
-    UserTokenService,
+    UserDomainService,
     JwtManageService,
+    {
+      provide: 'userServicePort',
+      useClass: UserService,
+    },
     {
       provide: UserRepositoryPort,
       useClass: UserTokenRepository,

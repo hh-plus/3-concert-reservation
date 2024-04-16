@@ -15,4 +15,10 @@ export interface ConcertRepositoryPort {
     concertDateId: number,
     seat: number,
   ): Promise<ConcertDateUserModel | null>;
+
+  createConcertDateUser(
+    concertDateId: number,
+    userId: number,
+    seat: number,
+  ): Promise<void>;
 }

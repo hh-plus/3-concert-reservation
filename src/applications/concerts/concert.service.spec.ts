@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConcertService } from './concert.service';
 import { ConcertRepositoryPort } from './adapters/concert.repository.port';
-import { ConcertDomainService } from 'src/domains/concert/concert.domain.service';
+import { ConcertDomainService } from 'src/domains/concerts/concert.domain.service';
 
 describe('ConcertService', () => {
   let service: ConcertService;
@@ -15,6 +15,7 @@ describe('ConcertService', () => {
       getConcertDatesByConcertId: jest.fn().mockResolvedValue([]),
       getConcertDateUsersByConcertDateId: jest.fn().mockResolvedValue([]),
       getConcertDateUserByConcertDateIdAndSeat: jest.fn(),
+      createConcertDateUser: jest.fn(),
     };
 
     concertDomainService = {

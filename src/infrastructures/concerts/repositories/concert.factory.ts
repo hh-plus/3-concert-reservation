@@ -3,18 +3,24 @@ import { ConcertReaderRepository } from './concert.reader.repository';
 
 import { ConcertRepositoryPort } from '../../../applications/concerts/adapters/concert.repository.port';
 import { ConcertMapper } from '../mappers/concert.mapper';
+import { ConcertRepository } from './concert.repository';
 
 @Injectable()
 export class ConcertFactory implements ConcertRepositoryPort {
-  constructor(private readonly concertRepository: ConcertReaderRepository) {}
+  constructor(
+    private readonly concertReaderRepository: ConcertReaderRepository,
+    private readonly concertRepository: ConcertRepository,
+  ) {}
 
   async getConcertById(concertId: number) {
-    const concert = await this.concertRepository.getConcertById(concertId);
+    const concert = await this.concertReaderRepository.getConcertById(
+      concertId,
+    );
     return concert ? ConcertMapper.convertingConcert(concert) : null;
   }
 
   async getConcertDateById(concertDateId: number) {
-    const concertDate = await this.concertRepository.getConcertDateById(
+    const concertDate = await this.concertReaderRepository.getConcertDateById(
       concertDateId,
     );
     return concertDate
@@ -24,13 +30,13 @@ export class ConcertFactory implements ConcertRepositoryPort {
 
   async getConcertDatesByConcertId(concertId: number) {
     const concertDates =
-      await this.concertRepository.getConcertsDateByConcertId(concertId);
+      await this.concertReaderRepository.getConcertsDateByConcertId(concertId);
     return concertDates ? ConcertMapper.mappingConcertDates(concertDates) : [];
   }
 
   async getConcertDateUsersByConcertDateId(concertDateId: number | number[]) {
     const concertDateUsers =
-      await this.concertRepository.getConcertDateUserByConcertDateIds(
+      await this.concertReaderRepository.getConcertDateUserByConcertDateIds(
         concertDateId,
       );
     return concertDateUsers
@@ -42,13 +48,26 @@ export class ConcertFactory implements ConcertRepositoryPort {
     concertDateId: number,
     seat: number,
   ) {
-    const concertDateUser = await this.concertRepository.getConcertDateUserBy({
-      concertDateId,
-      seat,
-    });
+    const concertDateUser =
+      await this.concertReaderRepository.getConcertDateUserBy({
+        concertDateId,
+        seat,
+      });
 
     return concertDateUser
       ? ConcertMapper.convertingConcertDateUser(concertDateUser)
       : null;
+  }
+
+  async createConcertDateUser(
+    concertDateId: number,
+    userId: number,
+    seat: number,
+  ): Promise<void> {
+    await this.concertRepository.createConcertDateUser(
+      concertDateId,
+      userId,
+      seat,
+    );
   }
 }

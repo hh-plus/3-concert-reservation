@@ -8,7 +8,8 @@ import { PrismaService } from 'prisma/prisma.service';
 
 import { ConcertService } from '../../applications/concerts/concert.service';
 import { ConcertFactory } from 'src/infrastructures/concerts/repositories/concert.factory';
-import { ConcertDomainService } from 'src/domains/concert/concert.domain.service';
+import { ConcertDomainService } from 'src/domains/concerts/concert.domain.service';
+import { ConcertRepository } from 'src/infrastructures/concerts/repositories/concert.repository';
 
 @Module({
   controllers: [ConcertController],
@@ -26,6 +27,7 @@ import { ConcertDomainService } from 'src/domains/concert/concert.domain.service
       useClass: ConcertFactory,
     },
     ConcertReaderRepository,
+    ConcertRepository,
   ],
 })
 export class ConcertModule {}
