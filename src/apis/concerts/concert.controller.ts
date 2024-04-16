@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -70,19 +71,20 @@ export class ConcertController {
 
   /** 콘서트 좌석 예약하기
    *
-   * @param concertId
+   * @param concertDateId
    * @throws 400 잘못 된 요청
    * @throws 401 접근 권한 없음
    * @returns
    */
-  @Post('/:concertId/reserve')
+  @Post('/:concertDateId/reserve')
   async reserveConcert(
-    @Param('concertId') concertId: number,
+    @Param('concertDateId') concertDateId: number,
     @Body() body: ReserveConcertReqDto,
+    @Request() req: any,
   ): Promise<ReserveConcertResDto> {
+    await this.concertService.reserveConcert(concertDateId, body, req.user);
     return {
-      success: true,
-      message: 'Success',
+      message: 'success',
     };
   }
 

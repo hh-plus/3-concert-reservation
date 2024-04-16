@@ -4,6 +4,7 @@ import { ConcertServicePort } from '../../apis/concerts/concert.service.port';
 import { ConcertDomainService } from 'src/domains/concert/concert.domain.service';
 import { NotFoundConcertException } from 'src/domains/concert/exceptions/not-found-concert.exception';
 import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
+import { ConcertValidate } from 'src/domains/concert/validations/concert.validate';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -62,5 +63,12 @@ export class ConcertService implements ConcertServicePort {
     concertDateId: number,
     reserveConcertReqDto: ReserveConcertReqDto,
     userId: number,
-  ) {}
+  ) {
+    const concertDateUser =
+      await this.concertRepositoryPort.getConcertDateUserByConcertDateIdAndSeat(
+        concertDateId,
+        reserveConcertReqDto.seat,
+      );
+    ConcertValidate.checkSeatExist(concertDateUser);
+  }
 }

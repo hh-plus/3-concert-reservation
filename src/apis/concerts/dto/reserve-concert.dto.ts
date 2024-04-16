@@ -3,6 +3,5 @@ export interface ReserveConcertReqDto {
 }
 
 export interface ReserveConcertResDto {
-  success: boolean;
   message: string;
 }
