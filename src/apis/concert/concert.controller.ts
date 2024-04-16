@@ -55,18 +55,18 @@ export class ConcertController {
    * @throws 401 접근 권한 없음
    * @returns
    */
-  // @Get('/:concertId/available-seats/:concertDateId')
-  // async getAvailableSeats(
-  //   @Param('concertId', ParseIntPipe) concertId: number,
-  //   @Param('concertDateId', ParseIntPipe) concertDateId: number,
-  // ): Promise<GetAvailableSeatsResDto> {
-  //   return {
-  //     data: await this.concertService.getAvailableSeats(
-  //       concertId,
-  //       concertDateId,
-  //     ),
-  //   };
-  // }
+  @Get('/:concertId/available-seats/:concertDateId')
+  async getAvailableSeats(
+    @Param('concertId', ParseIntPipe) concertId: number,
+    @Param('concertDateId', ParseIntPipe) concertDateId: number,
+  ): Promise<GetAvailableSeatsResDto> {
+    return {
+      data: await this.concertService.getAvailableSeats(
+        concertId,
+        concertDateId,
+      ),
+    };
+  }
 
   /** 콘서트 좌석 예약하기
    *
