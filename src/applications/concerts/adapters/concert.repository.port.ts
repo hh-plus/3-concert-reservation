@@ -3,9 +3,12 @@ import { ConcertDateModel } from 'src/infrastructures/concert/models/concert-dat
 import { ConcertDateUserModel } from 'src/infrastructures/concert/models/concert-date-user';
 
 export interface ConcertRepositoryPort {
-  getConcert(concertId: number): Promise<ConcertModel | null>;
-  getConcertDates(concertId: number): Promise<ConcertDateModel[] | []>;
-  getConcertDateUsers(
-    concertDateId: number,
+  getConcertById(concertId: number): Promise<ConcertModel | null>;
+  getConcertDateById(concertDateId: number): Promise<ConcertDateModel | null>;
+  getConcertDatesByConcertId(
+    concertId: number,
+  ): Promise<ConcertDateModel[] | []>;
+  getConcertDateUsersByConcertDateId(
+    concertDateId: number | number[],
   ): Promise<ConcertDateUserModel[] | []>;
 }

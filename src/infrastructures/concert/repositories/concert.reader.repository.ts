@@ -26,6 +26,14 @@ export class ConcertReaderRepository {
     });
   }
 
+  async getConcertDateById(concertDateId: number) {
+    return await this.prismaService.concertDate.findUnique({
+      where: {
+        id: concertDateId,
+      },
+    });
+  }
+
   async getSeatsByConcertDateIds(concertDateId: number | number[]) {
     return await this.prismaService.concertDateUser.findMany({
       where: {

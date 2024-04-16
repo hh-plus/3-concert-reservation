@@ -14,14 +14,14 @@ import {
 import {
   ReserveConcertReqDto,
   ReserveConcertResDto,
-} from '../dto/reserve-concert.dto';
+} from './dto/reserve-concert.dto';
 
-import { GetAvailableDateResDto } from '../dto/get-available-date.dto';
+import { GetAvailableDateResDto } from './dto/get-available-date.dto';
 
-import { GetAvailableSeatsResDto } from '../dto/get-available-seats.dto';
-import { PayConcertReqBodyDto } from '../dto/pay-concert.dto';
+import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
+import { PayConcertReqBodyDto } from './dto/pay-concert.dto';
 
-import { ConcertServicePort } from '../../applications/adapters/concert.service.port';
+import { ConcertServicePort } from '../../applications/concerts/adapters/concert.service.port';
 import { PassTokenGuard } from 'src/guard/pass-token/pass-token.guard';
 
 @Controller('concert')

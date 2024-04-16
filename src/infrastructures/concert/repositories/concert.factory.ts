@@ -1,25 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { ConcertReaderRepository } from './concert.reader.repository';
 
-import { ConcertRepositoryPort } from '../../../applications/adapters/concert.repository.port';
+import { ConcertRepositoryPort } from '../../../applications/concerts/adapters/concert.repository.port';
 import { ConcertMapper } from '../mappers/concert.mapper';
 
 @Injectable()
 export class ConcertFactory implements ConcertRepositoryPort {
   constructor(private readonly concertRepository: ConcertReaderRepository) {}
 
-  async getConcert(concertId: number) {
+  async getConcertById(concertId: number) {
     const concert = await this.concertRepository.getConcertById(concertId);
-    return concert ? ConcertMapper.mappingConcert(concert) : null;
+    return concert ? ConcertMapper.convertingConcert(concert) : null;
   }
 
-  async getConcertDates(concertId: number) {
+  async getConcertDateById(concertDateId: number) {
+    const concertDate = await this.concertRepository.getConcertDateById(
+      concertDateId,
+    );
+    return concertDate
+      ? ConcertMapper.convertingConcertDate(concertDate)
+      : null;
+  }
+
+  async getConcertDatesByConcertId(concertId: number) {
     const concertDates =
       await this.concertRepository.getConcertsDateByConcertId(concertId);
     return concertDates ? ConcertMapper.mappingConcertDates(concertDates) : [];
   }
 
-  async getConcertDateUsers(concertDateId: number | number[]) {
+  async getConcertDateUsersByConcertDateId(concertDateId: number | number[]) {
     const concertDateUsers =
       await this.concertRepository.getSeatsByConcertDateIds(concertDateId);
     return concertDateUsers

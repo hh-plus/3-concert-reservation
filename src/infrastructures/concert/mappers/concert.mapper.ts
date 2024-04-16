@@ -5,12 +5,20 @@ import { ConcertDateModel } from '../models/concert-date';
 import { ConcertDateUserModel } from '../models/concert-date-user';
 
 export class ConcertMapper {
-  static mappingConcert(concert: ConcertModel) {
+  static convertingConcert(concert: ConcertModel) {
     return {
       id: concert.id,
       name: concert.name,
       maxSeats: concert.maxSeats,
       price: concert.price,
+    };
+  }
+
+  static convertingConcertDate(concertDate: ConcertDateModel) {
+    return {
+      id: concertDate.id,
+      date: concertDate.date,
+      concertId: concertDate.concertId,
     };
   }
 
