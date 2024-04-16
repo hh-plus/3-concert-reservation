@@ -1,13 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CashLogRepositoryPort, UserRepositoryPort } from '../port/cash.port';
 import { User } from '@prisma/client';
 
 @Injectable()
 export class GetOneCashService {
-  constructor(
-    private readonly cashLogRepository: CashLogRepositoryPort,
-    private readonly userRepository: UserRepositoryPort,
-  ) {}
+  constructor(@Inject() private readonly cashUseCase: UserRepositoryPort) {}
 
   validate(user: User | null): void {
     if (!user) {

@@ -21,7 +21,7 @@ import { GetAvailableDateResDto } from './dto/get-available-date.dto';
 import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
 import { PayConcertReqBodyDto } from './dto/pay-concert.dto';
 
-import { ConcertServicePort } from './adapters/concert.service.port';
+import { ConcertServicePort } from '../adapters/concert.service.port';
 import { PassTokenGuard } from 'src/guard/pass-token/pass-token.guard';
 
 @Controller('concert')

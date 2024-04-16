@@ -5,7 +5,7 @@ import { ConcertRepositoryPort } from '../../adapters/concert.repository.port';
 import { ConcertValidate } from './concert.validate';
 
 @Injectable()
-export class ConcertUseCase implements ConcertRepositoryPort {
+export class ConcertFactory implements ConcertRepositoryPort {
   constructor(private readonly concertRepository: ConcertRepository) {}
 
   async getAvailableDate(concertId: number) {

@@ -1,17 +1,17 @@
 import { PrismaService } from '@@prisma/prisma.service';
-import { ConcertRepository } from '../repositories/concert.repository';
-import { ConcertUseCase } from './concert.use-case';
-import { ConcertMapper } from './concert.mapper';
+import { ConcertRepository } from './concert.repository';
+import { ConcertFactory } from './concert.factory';
+import { ConcertMapper } from '../services/concert.mapper';
 
 describe('ConcertUseCase', () => {
-  let useCase: ConcertUseCase;
+  let useCase: ConcertFactory;
   let repository: ConcertRepository;
   let prismaService: any;
   beforeEach(() => {
     prismaService = {} as PrismaService;
     repository = new ConcertRepository(prismaService);
 
-    useCase = new ConcertUseCase(repository);
+    useCase = new ConcertFactory(repository);
   });
 
   it('should be defined', () => {

@@ -7,8 +7,8 @@
 import type { IConnection, Primitive } from '@nestia/fetcher';
 import { PlainFetcher } from '@nestia/fetcher/lib/PlainFetcher';
 
-import type { ChargeCashReqBodyDto } from '../../../../cash/dto/charge-cash.dto';
-import type { GetCashResDto } from '../../../../cash/dto/getCash.dto';
+import type { ChargeCashReqBodyDto } from '../../../../src/cash/dto/charge-cash.dto';
+import type { GetCashResDto } from '../../../../src/cash/dto/getCash.dto';
 
 /**
  * 캐시 충전하기

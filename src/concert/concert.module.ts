@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 
-import { ConcertController } from './concert.controller';
+import { ConcertController } from './controllers/concert.controller';
 
 import { ConcertRepositoryPort } from './adapters/concert.repository.port';
 import { ConcertRepository } from './infra/repositories/concert.repository';
 import { PrismaService } from 'prisma/prisma.service';
-import { ConcertUseCase } from './infra/services/concert.use-case';
+import { ConcertFactory } from './infra/services/concert.factory';
 import { ConcertService } from './services/concert.service';
 
 @Module({
@@ -13,14 +13,14 @@ import { ConcertService } from './services/concert.service';
   providers: [
     PrismaService,
     ConcertService,
-    ConcertUseCase,
+    ConcertFactory,
     {
       provide: 'concertServicePort',
       useClass: ConcertService,
     },
     {
       provide: 'concertRepositoryPort',
-      useClass: ConcertUseCase,
+      useClass: ConcertFactory,
     },
     ConcertRepository,
   ],
