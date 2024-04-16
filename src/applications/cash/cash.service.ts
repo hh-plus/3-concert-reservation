@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CashServicePort } from 'src/apis/cash/cash.service.port';
 import { CashRepositoryPort } from './adapters/cash.repository.port';
 import { CashDomainClass } from 'src/domains/cash/cash.domain.service';
+import { CashValidationService } from 'src/domains/cash/validation/cash.validation.service';
 
 @Injectable()
 export class CashService implements CashServicePort {
@@ -11,6 +12,7 @@ export class CashService implements CashServicePort {
   ) {}
 
   async charge(userId: number, cash: number): Promise<void> {
+    CashValidationService.validateCash(cash);
     await this.cashRepositoryPort.charge(userId, cash);
   }
 
