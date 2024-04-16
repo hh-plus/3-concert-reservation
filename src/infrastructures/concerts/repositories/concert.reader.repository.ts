@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '@@prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ConcertReaderRepository {
@@ -34,7 +35,13 @@ export class ConcertReaderRepository {
     });
   }
 
-  async getSeatsByConcertDateIds(concertDateId: number | number[]) {
+  async getConcertDateUserBy(where: Prisma.ConcertDateUserWhereInput) {
+    return await this.prismaService.concertDateUser.findFirst({
+      where,
+    });
+  }
+
+  async getConcertDateUserByConcertDateIds(concertDateId: number | number[]) {
     return await this.prismaService.concertDateUser.findMany({
       where: {
         OR:

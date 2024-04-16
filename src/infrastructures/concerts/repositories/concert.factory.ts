@@ -30,9 +30,25 @@ export class ConcertFactory implements ConcertRepositoryPort {
 
   async getConcertDateUsersByConcertDateId(concertDateId: number | number[]) {
     const concertDateUsers =
-      await this.concertRepository.getSeatsByConcertDateIds(concertDateId);
+      await this.concertRepository.getConcertDateUserByConcertDateIds(
+        concertDateId,
+      );
     return concertDateUsers
       ? ConcertMapper.mappingConcertDateUsers(concertDateUsers)
       : [];
+  }
+
+  async getConcertDateUserByConcertDateIdAndSeat(
+    concertDateId: number,
+    seat: number,
+  ) {
+    const concertDateUser = await this.concertRepository.getConcertDateUserBy({
+      concertDateId,
+      seat,
+    });
+
+    return concertDateUser
+      ? ConcertMapper.convertingConcertDateUser(concertDateUser)
+      : null;
   }
 }

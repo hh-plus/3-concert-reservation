@@ -11,4 +11,8 @@ export interface ConcertRepositoryPort {
   getConcertDateUsersByConcertDateId(
     concertDateId: number | number[],
   ): Promise<ConcertDateUserModel[] | []>;
+  getConcertDateUserByConcertDateIdAndSeat(
+    concertDateId: number,
+    seat: number,
+  ): Promise<ConcertDateUserModel | null>;
 }

@@ -72,7 +72,7 @@ export class ConcertController {
    *
    * @param concertId
    * @throws 400 잘못 된 요청
-   * @throws 401 Bad Request
+   * @throws 401 접근 권한 없음
    * @returns
    */
   @Post('/:concertId/reserve')

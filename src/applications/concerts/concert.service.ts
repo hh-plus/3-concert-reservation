@@ -3,6 +3,7 @@ import { ConcertRepositoryPort } from './adapters/concert.repository.port';
 import { ConcertServicePort } from '../../apis/concerts/concert.service.port';
 import { ConcertDomainService } from 'src/domains/concert/concert.domain.service';
 import { NotFoundConcertException } from 'src/domains/concert/exceptions/not-found-concert.exception';
+import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -56,4 +57,10 @@ export class ConcertService implements ConcertServicePort {
       ),
     };
   }
+
+  async reserveConcert(
+    concertDateId: number,
+    reserveConcertReqDto: ReserveConcertReqDto,
+    userId: number,
+  ) {}
 }

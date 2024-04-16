@@ -22,6 +22,16 @@ export class ConcertMapper {
     };
   }
 
+  static convertingConcertDateUser(concertDateUser: ConcertDateUserModel) {
+    return {
+      id: concertDateUser.id,
+      concertDateId: concertDateUser.concertDateId,
+      userId: concertDateUser.userId,
+      seat: concertDateUser.seat,
+      payStatus: concertDateUser.payStatus,
+    };
+  }
+
   static mappingConcertDates(concertDates: ConcertDateModel[]) {
     return concertDates.map((concertDate) => {
       return {
