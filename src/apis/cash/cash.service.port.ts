@@ -1,4 +1,4 @@
 export interface CashServicePort {
-  charge(userId: number, cash: number): Promise<{ cash: number }>;
-  getOne(userId: number): Promise<{ cash: number }>;
+  charge(userId: number, cash: number): Promise<void>;
+  getCash(userId: number): Promise<{ cash: number }>;
 }

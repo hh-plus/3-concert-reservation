@@ -20,7 +20,7 @@ export class CashController {
    */
   @Get('/:userId')
   async getCash(@Param('userId') userId: number): Promise<GetCashResDto> {
-    return await this.cashService.getOne(userId);
+    return await this.cashService.getCash(userId);
   }
 
   /**
@@ -37,7 +37,7 @@ export class CashController {
   async chargeCash(
     @Param('userId') userId: number,
     @Body() body: ChargeCashReqBodyDto,
-  ): Promise<GetCashResDto> {
+  ): Promise<void> {
     return await this.cashService.charge(userId, body.cash);
   }
 }

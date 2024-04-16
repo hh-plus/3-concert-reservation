@@ -1,3 +1,1 @@
-export interface GetCashResDto {
-  cash: number;
-}
+export interface GetCashResDto {}
