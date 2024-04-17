@@ -19,8 +19,10 @@ describe('ConcertService', () => {
     };
 
     concertDomainService = {
+      expireTime: 5,
       getAvailableDate: jest.fn(),
       getAvailableSeats: jest.fn(),
+      getExpriedAt: jest.fn(),
     };
 
     service = new ConcertService(concertRepositoryPort, concertDomainService);

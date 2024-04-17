@@ -4,7 +4,7 @@ import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concer
 import { ConcertValidate } from './validations/concert.validate';
 
 export class ConcertDomainService {
-  private readonly expireTime = 5;
+  public readonly expireTime = 5;
 
   getAvailableDate(
     concert: ConcertModel,

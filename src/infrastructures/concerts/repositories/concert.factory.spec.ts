@@ -214,9 +214,15 @@ describe('ConcertUseCase', () => {
       const concertDateId = 1;
       const userId = 1;
       const seat = 1;
+      const expiredAt = new Date();
       repository.createConcertDateUser = jest.fn();
 
-      await concertFactory.createConcertDateUser(concertDateId, userId, seat);
+      await concertFactory.createConcertDateUser(
+        concertDateId,
+        userId,
+        seat,
+        expiredAt,
+      );
       expect(repository.createConcertDateUser).toBeCalled;
     });
   });
