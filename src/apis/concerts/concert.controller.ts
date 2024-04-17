@@ -82,10 +82,11 @@ export class ConcertController {
     @Body() body: ReserveConcertReqDto,
     @Request() req: any,
   ): Promise<ReserveConcertResDto> {
-    await this.concertService.reserveConcert(concertDateId, body, req.user);
-    return {
-      message: 'success',
-    };
+    return await this.concertService.reserveConcert(
+      concertDateId,
+      body,
+      req.user,
+    );
   }
 
   /**
@@ -94,7 +95,7 @@ export class ConcertController {
    * @param concertId
    * @param body 결제 정보
    * @throws 400 잘못 된 요청
-   * @throws 401 Bad Request
+   * @throws 401 접근 권한 없음
    */
   @Patch('/:concertId/pay')
   async payConcert(

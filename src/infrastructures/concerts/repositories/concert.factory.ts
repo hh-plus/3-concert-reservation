@@ -4,6 +4,8 @@ import { ConcertReaderRepository } from './concert.reader.repository';
 import { ConcertRepositoryPort } from '../../../applications/concerts/adapters/concert.repository.port';
 import { ConcertMapper } from '../mappers/concert.mapper';
 import { ConcertRepository } from './concert.repository';
+import { ConcertDateUser } from '@prisma/client';
+import { ConcertDateUserModel } from '../models/concert-date-user';
 
 @Injectable()
 export class ConcertFactory implements ConcertRepositoryPort {
@@ -64,14 +66,16 @@ export class ConcertFactory implements ConcertRepositoryPort {
     userId: number,
     seat: number,
     expiredAt: Date,
-  ): Promise<void> {
+  ): Promise<ConcertDateUserModel> {
     try {
-      await this.concertRepository.createConcertDateUser(
-        concertDateId,
-        userId,
-        seat,
-        expiredAt,
-      );
+      const concertDateUser =
+        await this.concertRepository.createConcertDateUser(
+          concertDateId,
+          userId,
+          seat,
+          expiredAt,
+        );
+      return ConcertMapper.convertingConcertDateUser(concertDateUser);
     } catch (err) {
       throw new ConflictException('이미 예약된 좌석입니다.');
     }

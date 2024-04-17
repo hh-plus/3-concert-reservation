@@ -6,4 +6,5 @@ export class ConcertDateUserModel {
   userId: number;
   seat: number;
   payStatus: $Enums.payStatus;
+  expiredAt: Date;
 }

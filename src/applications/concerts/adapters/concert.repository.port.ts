@@ -1,3 +1,4 @@
+import { ConcertDateUser } from '@prisma/client';
 import { ConcertModel } from 'src/infrastructures/concerts/models/concert';
 import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
 import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
@@ -21,5 +22,5 @@ export interface ConcertRepositoryPort {
     userId: number,
     seat: number,
     expiredAt: Date,
-  ): Promise<void>;
+  ): Promise<ConcertDateUserModel>;
 }

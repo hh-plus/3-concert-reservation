@@ -11,7 +11,7 @@ export class ConcertRepository {
     seat: number,
     expiredAt: Date,
   ) {
-    await this.prismaService.concertDateUser.create({
+    return await this.prismaService.concertDateUser.create({
       data: {
         expiredAt,
         concertDateId,

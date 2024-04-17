@@ -71,7 +71,7 @@ export class ConcertService implements ConcertServicePort {
       );
     ConcertValidate.checkSeatExist(concertDateUser);
 
-    await this.concertRepositoryPort.createConcertDateUser(
+    return await this.concertRepositoryPort.createConcertDateUser(
       concertDateId,
       userId,
       reserveConcertReqDto.seat,

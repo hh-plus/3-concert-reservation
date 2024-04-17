@@ -29,6 +29,7 @@ export class ConcertMapper {
       userId: concertDateUser.userId,
       seat: concertDateUser.seat,
       payStatus: concertDateUser.payStatus,
+      expiredAt: concertDateUser.expiredAt,
     };
   }
 
@@ -52,6 +53,7 @@ export class ConcertMapper {
         userId: concertDateUser.userId,
         seat: concertDateUser.seat,
         payStatus: concertDateUser.payStatus,
+        expiredAt: concertDateUser.expiredAt,
       };
     });
   }
