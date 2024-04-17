@@ -36,6 +36,18 @@ export class ConcertFactory implements ConcertRepositoryPort {
     return concertDates ? ConcertMapper.mappingConcertDates(concertDates) : [];
   }
 
+  async getConcertDateUserById(
+    concertDateUserId: number,
+  ): Promise<ConcertDateUserModel | null> {
+    const concertDateUser =
+      await this.concertReaderRepository.getConcertDateUserById(
+        concertDateUserId,
+      );
+    return concertDateUser
+      ? ConcertMapper.convertingConcertDateUser(concertDateUser)
+      : null;
+  }
+
   async getConcertDateUsersByConcertDateId(concertDateId: number | number[]) {
     const concertDateUsers =
       await this.concertReaderRepository.getConcertDateUserByConcertDateIds(
@@ -81,6 +93,16 @@ export class ConcertFactory implements ConcertRepositoryPort {
     } catch (err) {
       throw new ConflictException('이미 예약된 좌석입니다.');
     }
+  }
+
+  async updateConcertDateUser(
+    transaction: Prisma.TransactionClient,
+    concertDateUser: ConcertDateUserModel,
+  ): Promise<void> {
+    return await this.concertRepository.updateConcertDateUser(
+      transaction,
+      concertDateUser,
+    );
   }
 
   async deleteConcertDateUser(

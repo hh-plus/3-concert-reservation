@@ -8,6 +8,7 @@ import { ConcertValidate } from 'src/domains/concerts/validations/concert.valida
 import { PrismaService } from '@@prisma/prisma.service';
 import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
 import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
+import { PayConcertResDto } from 'src/apis/concerts/dto/pay-concert.dto';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -92,6 +93,23 @@ export class ConcertService implements ConcertServicePort {
         userId,
         reserveConcertReqDto.seat,
         this.concertDomainService.getExpriedAt(),
+      );
+    });
+  }
+
+  async payConcert(concertDateUserId: number, userId: number): Promise<void> {
+    const concertDateUser =
+      await this.concertRepositoryPort.getConcertDateUserById(
+        concertDateUserId,
+      );
+    ConcertValidate.checkSeatExist(concertDateUser);
+    ConcertValidate.checkAvailableUser(concertDateUser, userId);
+    ConcertValidate.checkExpiredSeat(concertDateUser);
+
+    await this.prismaService.$transaction(async (tx) => {
+      await this.concertRepositoryPort.updateConcertDateUser(
+        tx,
+        concertDateUser,
       );
     });
   }

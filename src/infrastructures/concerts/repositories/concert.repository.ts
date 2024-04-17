@@ -1,6 +1,6 @@
 import { PrismaService } from '@@prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { ConcertDateUser, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ConcertRepository {
@@ -20,6 +20,18 @@ export class ConcertRepository {
         userId,
         seat,
       },
+    });
+  }
+
+  async updateConcertDateUser(
+    transaction: Prisma.TransactionClient,
+    concertDateUser: Omit<ConcertDateUser, 'createdAt' | 'updatedAt'>,
+  ) {
+    await (transaction ?? this.prismaService).concertDateUser.update({
+      where: {
+        id: concertDateUser.id,
+      },
+      data: concertDateUser,
     });
   }
 

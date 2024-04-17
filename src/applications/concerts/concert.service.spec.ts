@@ -17,7 +17,9 @@ describe('ConcertService', () => {
       getConcertDatesByConcertId: jest.fn().mockResolvedValue([]),
       getConcertDateUsersByConcertDateId: jest.fn().mockResolvedValue([]),
       getConcertDateUserByConcertDateIdAndSeat: jest.fn(),
+      getConcertDateUserById: jest.fn(),
       createConcertDateUser: jest.fn(),
+      updateConcertDateUser: jest.fn(),
       deleteConcertDateUser: jest.fn(),
     };
 

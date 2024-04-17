@@ -9,6 +9,10 @@ export interface ConcertRepositoryPort {
   getConcertDatesByConcertId(
     concertId: number,
   ): Promise<ConcertDateModel[] | []>;
+
+  getConcertDateUserById(
+    concertDateUserId: number,
+  ): Promise<ConcertDateUserModel | null>;
   getConcertDateUsersByConcertDateId(
     concertDateId: number | number[],
   ): Promise<ConcertDateUserModel[] | []>;
@@ -24,6 +28,11 @@ export interface ConcertRepositoryPort {
     seat: number,
     expiredAt: Date,
   ): Promise<ConcertDateUserModel>;
+
+  updateConcertDateUser(
+    tx: Prisma.TransactionClient,
+    concertDateUser: ConcertDateUserModel,
+  ): Promise<void>;
 
   deleteConcertDateUser(
     transaction: Prisma.TransactionClient,

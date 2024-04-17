@@ -1,5 +1,6 @@
 import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
 import { AlreadyReserveSeatException } from '../exceptions/already-reserve-seat.exception';
+import { UnauthorizedException } from '@nestjs/common';
 
 export class ConcertValidate {
   static checkFullSeats(
@@ -22,5 +23,14 @@ export class ConcertValidate {
       return false;
     }
     return true;
+  }
+
+  static checkAvailableUser(
+    concertDateUser: ConcertDateUserModel,
+    userId: number,
+  ) {
+    if (concertDateUser.userId !== userId) {
+      throw new UnauthorizedException();
+    }
   }
 }

@@ -20,10 +20,10 @@ import {
 import { GetAvailableDateResDto } from './dto/get-available-date.dto';
 
 import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
-import { PayConcertReqBodyDto } from './dto/pay-concert.dto';
 
 import { ConcertServicePort } from './concert.service.port';
 import { PassTokenGuard } from 'src/guard/pass-token/pass-token.guard';
+import { PayConcertResDto } from './dto/pay-concert.dto';
 
 @Controller('concert')
 export class ConcertController {
@@ -92,16 +92,17 @@ export class ConcertController {
   /**
    * 콘서트 결제하기
    *
-   * @param concertId
+   * @param concertDateUserId
    * @param body 결제 정보
    * @throws 400 잘못 된 요청
    * @throws 401 접근 권한 없음
    */
-  @Patch('/:concertId/pay')
+  @Patch('/:concertDateUserId/pay')
   async payConcert(
-    @Param('concertId') concertId: number,
-    @Body() body: PayConcertReqBodyDto,
+    @Param('concertDateUserId') concertDateUserId: number,
+    @Request() req: any,
   ): Promise<void> {
-    return;
+    const userId = req.user.id;
+    await this.concertService.payConcert(concertDateUserId, userId);
   }
 }

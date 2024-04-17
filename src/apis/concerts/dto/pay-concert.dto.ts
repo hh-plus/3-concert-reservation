@@ -1,4 +1,3 @@
-export interface PayConcertReqBodyDto {
-  date: string;
-  seat: number;
+export interface PayConcertResDto {
+  id: number;
 }

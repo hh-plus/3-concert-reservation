@@ -35,6 +35,14 @@ export class ConcertReaderRepository {
     });
   }
 
+  async getConcertDateUserById(concertDateUserId: number) {
+    return await this.prismaService.concertDateUser.findUnique({
+      where: {
+        id: concertDateUserId,
+      },
+    });
+  }
+
   async getConcertDateUserBy(where: Prisma.ConcertDateUserWhereInput) {
     return await this.prismaService.concertDateUser.findFirst({
       where,
