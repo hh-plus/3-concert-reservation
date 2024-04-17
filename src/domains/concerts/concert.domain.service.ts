@@ -4,6 +4,8 @@ import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concer
 import { ConcertValidate } from './validations/concert.validate';
 
 export class ConcertDomainService {
+  private readonly expireTime = 5;
+
   getAvailableDate(
     concert: ConcertModel,
     concertDates: ConcertDateModel[],
@@ -37,5 +39,11 @@ export class ConcertDomainService {
       }
     }
     return results;
+  }
+
+  getExpriedAt() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + this.expireTime);
+    return now;
   }
 }

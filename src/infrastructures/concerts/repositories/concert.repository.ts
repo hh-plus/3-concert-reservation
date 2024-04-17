@@ -9,9 +9,11 @@ export class ConcertRepository {
     concertDateId: number,
     userId: number,
     seat: number,
+    expiredAt: Date,
   ) {
     await this.prismaService.concertDateUser.create({
       data: {
+        expiredAt,
         concertDateId,
         userId,
         seat,

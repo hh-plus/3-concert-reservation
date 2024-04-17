@@ -70,10 +70,12 @@ export class ConcertService implements ConcertServicePort {
         reserveConcertReqDto.seat,
       );
     ConcertValidate.checkSeatExist(concertDateUser);
+
     await this.concertRepositoryPort.createConcertDateUser(
       concertDateId,
       userId,
       reserveConcertReqDto.seat,
+      this.concertDomainService.getExpriedAt(),
     );
   }
 }

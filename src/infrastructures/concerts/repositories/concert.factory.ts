@@ -63,12 +63,14 @@ export class ConcertFactory implements ConcertRepositoryPort {
     concertDateId: number,
     userId: number,
     seat: number,
+    expiredAt: Date,
   ): Promise<void> {
     try {
       await this.concertRepository.createConcertDateUser(
         concertDateId,
         userId,
         seat,
+        expiredAt,
       );
     } catch (err) {
       throw new ConflictException('이미 예약된 좌석입니다.');

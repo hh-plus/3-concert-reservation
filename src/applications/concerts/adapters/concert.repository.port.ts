@@ -20,5 +20,6 @@ export interface ConcertRepositoryPort {
     concertDateId: number,
     userId: number,
     seat: number,
+    expiredAt: Date,
   ): Promise<void>;
 }
