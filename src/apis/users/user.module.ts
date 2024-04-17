@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { UserService } from '../../applications/users/services/user.service';
 import { UserController } from './user.controller';
-import { UserRepositoryPort } from '../../applications/users/services/port/user.repository.port';
-import { UserTokenRepository } from '../../infrastructures/users/repositories/user-token.repository';
+import { UserTokenRepositoryPort } from '../../applications/users/services/port/user-token.repository.port';
+
 import { PrismaService } from 'prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtManageService } from '../../domains/users/jwt/jwt.service';
 import { UserDomainService } from 'src/domains/users/user.domain.service';
+import { UserTokenFactory } from 'src/infrastructures/users/repositories/user-token.factory';
+import { UserTokenReaderRepository } from 'src/infrastructures/users/repositories/user-token/user-token.reader.repository';
+import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
 
 @Module({
   imports: [
@@ -22,14 +25,17 @@ import { UserDomainService } from 'src/domains/users/user.domain.service';
     PrismaService,
     UserDomainService,
     JwtManageService,
+    UserTokenDomainService,
     {
       provide: 'userServicePort',
       useClass: UserService,
     },
     {
-      provide: UserRepositoryPort,
-      useClass: UserTokenRepository,
+      provide: 'userTokenRepositoryPort',
+      useClass: UserTokenFactory,
     },
+
+    UserTokenReaderRepository,
   ],
 })
 export class UserModule {}

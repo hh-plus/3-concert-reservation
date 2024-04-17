@@ -4,5 +4,6 @@ export interface UserServicePort {
     token: string,
   ): Promise<{
     waitingNumber: number;
+    token?: string;
   }>;
 }
