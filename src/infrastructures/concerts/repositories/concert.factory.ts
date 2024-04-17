@@ -4,7 +4,7 @@ import { ConcertReaderRepository } from './concert.reader.repository';
 import { ConcertRepositoryPort } from '../../../applications/concerts/adapters/concert.repository.port';
 import { ConcertMapper } from '../mappers/concert.mapper';
 import { ConcertRepository } from './concert.repository';
-import { ConcertDateUser } from '@prisma/client';
+import { ConcertDateUser, Prisma } from '@prisma/client';
 import { ConcertDateUserModel } from '../models/concert-date-user';
 
 @Injectable()
@@ -62,6 +62,7 @@ export class ConcertFactory implements ConcertRepositoryPort {
   }
 
   async createConcertDateUser(
+    tx: Prisma.TransactionClient,
     concertDateId: number,
     userId: number,
     seat: number,
@@ -70,6 +71,7 @@ export class ConcertFactory implements ConcertRepositoryPort {
     try {
       const concertDateUser =
         await this.concertRepository.createConcertDateUser(
+          tx,
           concertDateId,
           userId,
           seat,
@@ -79,5 +81,15 @@ export class ConcertFactory implements ConcertRepositoryPort {
     } catch (err) {
       throw new ConflictException('이미 예약된 좌석입니다.');
     }
+  }
+
+  async deleteConcertDateUser(
+    transaction: Prisma.TransactionClient,
+    concertDateUserId: number,
+  ): Promise<void> {
+    await this.concertRepository.deleteConcertDateUserById(
+      transaction,
+      concertDateUserId,
+    );
   }
 }

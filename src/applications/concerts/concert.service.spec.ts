@@ -2,11 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConcertService } from './concert.service';
 import { ConcertRepositoryPort } from './adapters/concert.repository.port';
 import { ConcertDomainService } from 'src/domains/concerts/concert.domain.service';
+import { PrismaService } from '@@prisma/prisma.service';
 
 describe('ConcertService', () => {
   let service: ConcertService;
   let concertRepositoryPort: ConcertRepositoryPort;
   let concertDomainService: ConcertDomainService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     concertRepositoryPort = {
@@ -16,6 +18,7 @@ describe('ConcertService', () => {
       getConcertDateUsersByConcertDateId: jest.fn().mockResolvedValue([]),
       getConcertDateUserByConcertDateIdAndSeat: jest.fn(),
       createConcertDateUser: jest.fn(),
+      deleteConcertDateUser: jest.fn(),
     };
 
     concertDomainService = {
@@ -25,7 +28,11 @@ describe('ConcertService', () => {
       getExpriedAt: jest.fn(),
     };
 
-    service = new ConcertService(concertRepositoryPort, concertDomainService);
+    service = new ConcertService(
+      concertRepositoryPort,
+      concertDomainService,
+      prismaService,
+    );
   });
 
   it('should be defined', () => {

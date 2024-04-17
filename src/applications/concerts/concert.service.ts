@@ -5,6 +5,9 @@ import { ConcertDomainService } from 'src/domains/concerts/concert.domain.servic
 import { NotFoundConcertException } from 'src/domains/concerts/exceptions/not-found-concert.exception';
 import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
 import { ConcertValidate } from 'src/domains/concerts/validations/concert.validate';
+import { PrismaService } from '@@prisma/prisma.service';
+import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
+import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -13,6 +16,8 @@ export class ConcertService implements ConcertServicePort {
     private readonly concertRepositoryPort: ConcertRepositoryPort,
 
     private readonly concertDomainService: ConcertDomainService,
+
+    private readonly prismaService: PrismaService,
   ) {}
 
   async getAvailableDate(concertId: number) {
@@ -64,18 +69,30 @@ export class ConcertService implements ConcertServicePort {
     reserveConcertReqDto: ReserveConcertReqDto,
     userId: number,
   ) {
-    const concertDateUser =
-      await this.concertRepositoryPort.getConcertDateUserByConcertDateIdAndSeat(
-        concertDateId,
-        reserveConcertReqDto.seat,
-      );
-    ConcertValidate.checkSeatExist(concertDateUser);
+    return await this.prismaService.$transaction(async (tx) => {
+      const concertDateUser =
+        await this.concertRepositoryPort.getConcertDateUserByConcertDateIdAndSeat(
+          concertDateId,
+          reserveConcertReqDto.seat,
+        );
 
-    return await this.concertRepositoryPort.createConcertDateUser(
-      concertDateId,
-      userId,
-      reserveConcertReqDto.seat,
-      this.concertDomainService.getExpriedAt(),
-    );
+      ConcertValidate.checkSeatExist(concertDateUser);
+
+      if (!ConcertValidate.checkExpiredSeat) {
+        await this.concertRepositoryPort.deleteConcertDateUser(
+          tx,
+          concertDateUser.id,
+        );
+      }
+
+      // check user can reserve by use multiple pk
+      return await this.concertRepositoryPort.createConcertDateUser(
+        tx,
+        concertDateId,
+        userId,
+        reserveConcertReqDto.seat,
+        this.concertDomainService.getExpriedAt(),
+      );
+    });
   }
 }

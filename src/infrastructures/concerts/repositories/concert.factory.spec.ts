@@ -3,12 +3,14 @@ import { ConcertReaderRepository } from './concert.reader.repository';
 import { ConcertFactory } from './concert.factory';
 import { ConcertMapper } from '../mappers/concert.mapper';
 import { ConcertRepository } from './concert.repository';
+import { Prisma } from '@prisma/client';
 
 describe('ConcertUseCase', () => {
   let concertFactory: ConcertFactory;
   let readerRepository: ConcertReaderRepository;
   let repository: ConcertRepository;
   let prismaService: any;
+  let transaction: Prisma.TransactionClient;
   beforeEach(() => {
     prismaService = {} as PrismaService;
     readerRepository = new ConcertReaderRepository(prismaService);
@@ -218,6 +220,7 @@ describe('ConcertUseCase', () => {
       repository.createConcertDateUser = jest.fn();
 
       await concertFactory.createConcertDateUser(
+        transaction,
         concertDateId,
         userId,
         seat,

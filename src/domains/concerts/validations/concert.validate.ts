@@ -9,9 +9,18 @@ export class ConcertValidate {
     return concertDateUsers.length >= maxSeats;
   }
 
-  static checkSeatExist(concertDateUser: ConcertDateUserModel | null) {
+  static checkSeatExist(
+    concertDateUser: ConcertDateUserModel | null,
+  ): asserts concertDateUser is ConcertDateUserModel {
     if (concertDateUser) {
       throw new AlreadyReserveSeatException();
     }
+  }
+
+  static checkExpiredSeat(concertDateUser: ConcertDateUserModel) {
+    if (concertDateUser.expiredAt < new Date()) {
+      return false;
+    }
+    return true;
   }
 }
