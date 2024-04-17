@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { ConcertReaderRepository } from './concert.reader.repository';
 
 import { ConcertRepositoryPort } from '../../../applications/concerts/adapters/concert.repository.port';
@@ -64,10 +64,14 @@ export class ConcertFactory implements ConcertRepositoryPort {
     userId: number,
     seat: number,
   ): Promise<void> {
-    await this.concertRepository.createConcertDateUser(
-      concertDateId,
-      userId,
-      seat,
-    );
+    try {
+      await this.concertRepository.createConcertDateUser(
+        concertDateId,
+        userId,
+        seat,
+      );
+    } catch (err) {
+      throw new ConflictException('이미 예약된 좌석입니다.');
+    }
   }
 }

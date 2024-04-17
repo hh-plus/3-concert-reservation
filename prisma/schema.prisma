@@ -78,6 +78,7 @@ model ConcertDateUser {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([concertDateId, seat])
   @@index([concertDateId])
 }
 
