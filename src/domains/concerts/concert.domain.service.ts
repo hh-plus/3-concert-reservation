@@ -34,7 +34,11 @@ export class ConcertDomainService {
   ) {
     const results: number[] = [];
     for (let i = 1; i <= maxSeats; i++) {
-      if (!concertDateUsers.some((cd) => cd.seat === i)) {
+      const existConcertDateUser = concertDateUsers.find((cd) => cd.seat === i);
+      if (
+        !existConcertDateUser ||
+        !ConcertValidate.checkExpiredSeat(existConcertDateUser)
+      ) {
         results.push(i);
       }
     }
