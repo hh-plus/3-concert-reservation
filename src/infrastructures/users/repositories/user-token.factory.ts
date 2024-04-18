@@ -5,7 +5,9 @@ import {
   mappingUserToken,
 } from '../mappers/user-token.mapper';
 import { UserTokenModel } from 'src/domains/users/models/user-token.model';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UserTokenFactory implements UserTokenRepositoryPort {
   constructor(
     private readonly userTokenReaderRepository: UserTokenReaderRepository,

@@ -9,6 +9,8 @@ import { PrismaService } from '@@prisma/prisma.service';
 import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
 import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
 import { PayConcertResDto } from 'src/apis/concerts/dto/pay-concert.dto';
+import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
+import { CashValidationService } from 'src/domains/cash/validation/cash.validation.service';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -17,6 +19,9 @@ export class ConcertService implements ConcertServicePort {
     private readonly concertRepositoryPort: ConcertRepositoryPort,
 
     private readonly concertDomainService: ConcertDomainService,
+
+    @Inject('cashRepositoryPort')
+    private readonly cashRepositoryPort: CashRepositoryPort,
 
     private readonly prismaService: PrismaService,
   ) {}
@@ -28,18 +33,17 @@ export class ConcertService implements ConcertServicePort {
     }
     const concertDates =
       await this.concertRepositoryPort.getConcertDatesByConcertId(concertId);
+
     const concertDateUsers =
       await this.concertRepositoryPort.getConcertDateUsersByConcertDateId(
         concertDates.map((cd) => cd.id),
       );
 
-    return {
-      date: this.concertDomainService.getAvailableDate(
-        concert,
-        concertDates,
-        concertDateUsers,
-      ),
-    };
+    return this.concertDomainService.getAvailableDate(
+      concert,
+      concertDates,
+      concertDateUsers,
+    );
   }
 
   async getAvailableSeats(concertId: number, concertDateId: number) {
@@ -97,7 +101,23 @@ export class ConcertService implements ConcertServicePort {
     });
   }
 
-  async payConcert(concertDateUserId: number, userId: number): Promise<void> {
+  async payConcert(
+    concertId: number,
+    concertDateUserId: number,
+    userId: number,
+  ): Promise<void> {
+    const userCashLog = await this.cashRepositoryPort.getCashListByUserId(
+      userId,
+    );
+    const concert = await this.concertRepositoryPort.getConcertById(concertId);
+
+    if (!concert) {
+      throw new NotFoundConcertException();
+    }
+
+    const cash = CashValidationService.getCashByCashLog(userCashLog);
+    ConcertValidate.checkCashGreaterThanPrice(cash, concert.price);
+
     const concertDateUser =
       await this.concertRepositoryPort.getConcertDateUserById(
         concertDateUserId,
@@ -106,8 +126,8 @@ export class ConcertService implements ConcertServicePort {
     ConcertValidate.checkAvailableUser(concertDateUser, userId);
     ConcertValidate.checkExpiredSeat(concertDateUser);
 
-    await this.prismaService.$transaction(async (tx) => {
-      await this.concertRepositoryPort.updateConcertDateUser(
+    return await this.prismaService.$transaction(async (tx) => {
+      return await this.concertRepositoryPort.updateConcertDateUser(
         tx,
         concertDateUser,
       );

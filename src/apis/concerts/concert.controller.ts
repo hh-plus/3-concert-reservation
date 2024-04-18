@@ -45,7 +45,11 @@ export class ConcertController {
   async getAvailableDate(
     @Param('concertId', ParseIntPipe) concertId: number,
   ): Promise<GetAvailableDateResDto> {
-    return { data: await this.concertService.getAvailableDate(concertId) };
+    return {
+      data: {
+        concertDates: await this.concertService.getAvailableDate(concertId),
+      },
+    };
   }
 
   /**
@@ -76,16 +80,17 @@ export class ConcertController {
    * @throws 401 접근 권한 없음
    * @returns
    */
+  @UseGuards(PassTokenGuard)
   @Post('/:concertDateId/reserve')
   async reserveConcert(
-    @Param('concertDateId') concertDateId: number,
+    @Param('concertDateId', ParseIntPipe) concertDateId: number,
     @Body() body: ReserveConcertReqDto,
     @Request() req: any,
   ): Promise<ReserveConcertResDto> {
     return await this.concertService.reserveConcert(
       concertDateId,
       body,
-      req.user,
+      req.user.userId,
     );
   }
 
@@ -97,12 +102,14 @@ export class ConcertController {
    * @throws 400 잘못 된 요청
    * @throws 401 접근 권한 없음
    */
-  @Patch('/:concertDateUserId/pay')
+  @UseGuards(PassTokenGuard)
+  @Patch('/:concertId/:concertDateUserId/pay')
   async payConcert(
-    @Param('concertDateUserId') concertDateUserId: number,
+    @Param('concertId', ParseIntPipe) concertId: number,
+    @Param('concertDateUserId', ParseIntPipe) concertDateUserId: number,
     @Request() req: any,
   ): Promise<void> {
     const userId = req.user.id;
-    await this.concertService.payConcert(concertDateUserId, userId);
+    await this.concertService.payConcert(concertId, concertDateUserId, userId);
   }
 }

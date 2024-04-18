@@ -11,7 +11,7 @@ export class ConcertDomainService {
     concertDates: ConcertDateModel[],
     concertDateUsers: ConcertDateUserModel[],
   ) {
-    const results: string[] = [];
+    const results: { id: number; date: string }[] = [];
     const maxSeats = concert.maxSeats;
 
     for (const concertDate of concertDates) {
@@ -21,7 +21,10 @@ export class ConcertDomainService {
           concertDateUsers.filter((cd) => cd.concertDateId === concertDate.id),
         )
       ) {
-        results.push(new Date(concertDate.date).toISOString());
+        results.push({
+          id: concertDate.id,
+          date: new Date(concertDate.date).toISOString(),
+        });
       }
     }
 

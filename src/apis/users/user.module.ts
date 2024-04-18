@@ -3,7 +3,7 @@ import { UserService } from '../../applications/users/services/user.service';
 import { UserController } from './user.controller';
 import { UserTokenRepositoryPort } from '../../applications/users/services/port/user-token.repository.port';
 
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@@prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtManageService } from '../../domains/users/jwt/jwt.service';
 import { UserDomainService } from 'src/domains/users/user.domain.service';

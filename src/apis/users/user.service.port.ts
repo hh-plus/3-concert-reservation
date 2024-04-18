@@ -1,5 +1,5 @@
 export interface UserServicePort {
-  checkTokenOrCreate(
+  getOrCreate(
     userId: number,
     token: string,
   ): Promise<{

@@ -6,7 +6,7 @@ import {
 import { PayConcertResDto } from './dto/pay-concert.dto';
 
 export interface ConcertServicePort {
-  getAvailableDate(concertId: number): Promise<{ date: string[] }>;
+  getAvailableDate(concertId: number): Promise<{ id: number; date: string }[]>;
   getAvailableSeats(
     concertId: number,
     concertDateId: number,
@@ -17,5 +17,9 @@ export interface ConcertServicePort {
     userId: number,
   ): Promise<ReserveConcertResDto>;
 
-  payConcert(concertDateUserId: number, userId: number): Promise<void>;
+  payConcert(
+    concertId: number,
+    concertDateUserId: number,
+    userId: number,
+  ): Promise<void>;
 }

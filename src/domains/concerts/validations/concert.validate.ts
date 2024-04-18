@@ -33,4 +33,10 @@ export class ConcertValidate {
       throw new UnauthorizedException();
     }
   }
+
+  static checkCashGreaterThanPrice(cash: number, price: number) {
+    if (cash < price) {
+      throw new UnauthorizedException();
+    }
+  }
 }
