@@ -1,4 +1,10 @@
-import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserTokenRepositoryPort } from './port/user-token.repository.port';
 
 import { JwtManageService } from '../../../domains/users/jwt/jwt.service';
@@ -7,25 +13,33 @@ import { UserDomainService } from 'src/domains/users/user.domain.service';
 import { UserValidateService } from 'src/domains/users/validate/user.validate.service';
 import { checkExistUserToken } from 'src/domains/users/validate/user-token.validate';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
+import { userRepositoryPort } from './port/user.repository.port';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('userTokenRepositoryPort')
-    private readonly userRepositoryPort: UserTokenRepositoryPort,
+    private readonly userTokenRepositoryPort: UserTokenRepositoryPort,
+    @Inject('userRepositoryPort')
+    private readonly userRepository: userRepositoryPort,
     private readonly userDomainService: UserDomainService,
     private readonly jwtManageService: JwtManageService,
     private readonly userTokenDomainService: UserTokenDomainService,
   ) {}
 
   public async getOrCreate(userId: number): Promise<{ token: string }> {
-    const existUserToken = await this.userRepositoryPort.getUserTokenByUserId(
-      userId,
-    );
+    const user = await this.userRepository.getOneById(userId);
+
+    if (!user) {
+      throw new NotFoundException('not found user');
+    }
+
+    const existUserToken =
+      await this.userTokenRepositoryPort.getUserTokenByUserId(userId);
 
     checkExistUserToken(existUserToken);
 
-    const tokens = await this.userRepositoryPort.getAll();
+    const tokens = await this.userTokenRepositoryPort.getAll();
     const waitingNumber = this.userTokenDomainService.getWaitingCount(tokens);
 
     const entryTime = this.jwtManageService.getEntryTime(waitingNumber);
@@ -35,8 +49,7 @@ export class UserService {
       entryTime,
       waitingNumber,
     });
-
-    await this.userRepositoryPort.create(
+    await this.userTokenRepositoryPort.create(
       userId,
       entryTime,
       this.jwtManageService.getExpiredAt(entryTime),

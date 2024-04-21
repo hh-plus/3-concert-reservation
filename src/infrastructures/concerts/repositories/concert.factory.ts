@@ -5,7 +5,7 @@ import { ConcertRepositoryPort } from '../../../applications/concerts/adapters/c
 import { ConcertMapper } from '../mappers/concert.mapper';
 import { ConcertRepository } from './concert.repository';
 import { ConcertDateUser, Prisma } from '@prisma/client';
-import { ConcertDateUserModel } from '../models/concert-date-user';
+import { ConcertDateUserModel } from '../../../domains/concerts/models/concert-date-user';
 
 @Injectable()
 export class ConcertFactory implements ConcertRepositoryPort {

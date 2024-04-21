@@ -11,6 +11,9 @@ import { UserTokenFactory } from 'src/infrastructures/users/repositories/user-to
 import { UserTokenReaderRepository } from 'src/infrastructures/users/repositories/user-token/user-token.reader.repository';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
 
+import { UserFactory } from 'src/infrastructures/users/repositories/user.factory';
+import { UserRepository } from 'src/infrastructures/users/repositories/user.repository';
+
 @Module({
   imports: [
     JwtModule.register({
@@ -31,10 +34,14 @@ import { UserTokenDomainService } from 'src/domains/users/user-token.domain.serv
       useClass: UserService,
     },
     {
+      provide: 'userRepositoryPort',
+      useClass: UserFactory,
+    },
+    {
       provide: 'userTokenRepositoryPort',
       useClass: UserTokenFactory,
     },
-
+    UserRepository,
     UserTokenReaderRepository,
   ],
 })

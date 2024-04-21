@@ -1,7 +1,7 @@
 import { ConcertDateUser, Prisma } from '@prisma/client';
-import { ConcertModel } from 'src/infrastructures/concerts/models/concert';
-import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
-import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
+import { ConcertModel } from 'src/domains/concerts/models/concert';
+import { ConcertDateModel } from 'src/domains/concerts/models/concert-date';
+import { ConcertDateUserModel } from 'src/domains/concerts/models/concert-date-user';
 
 export interface ConcertRepositoryPort {
   getConcertById(concertId: number): Promise<ConcertModel | null>;

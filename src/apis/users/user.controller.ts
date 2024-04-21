@@ -23,6 +23,7 @@ export class UserController {
     @Request() req,
   ): Promise<GetTokenResDto> {
     const token = req.headers['authorization']?.split('Bearer ')[1];
+
     const result = await this.userService.getOrCreate(userId, token);
     return {
       data: {

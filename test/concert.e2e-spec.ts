@@ -3,11 +3,12 @@ import { setupPrismaService } from './start-container';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import { PrismaService } from '@@prisma/prisma.service';
-import { UserMock } from './mock/user.mock';
+import { UserMock } from './mock/users/user.mock';
 import { ConcertMock } from './mock/concerts/concert.mock';
 import { ConcertDateMock } from './mock/concerts/concert-date.mock';
 import * as request from 'supertest';
 
+const userCount = 300;
 describe('Concert', () => {
   jest.setTimeout(100000);
 
@@ -18,7 +19,7 @@ describe('Concert', () => {
 
   let token: string;
   let token2: string;
-  beforeEach(async () => {
+  beforeAll(async () => {
     ({ prisma, container } = await setupPrismaService());
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -32,7 +33,7 @@ describe('Concert', () => {
     await app.init();
 
     // mock data
-    const userMock = new UserMock(prisma, 10);
+    const userMock = new UserMock(prisma, 300);
     await userMock.insert();
 
     const concertMock = new ConcertMock(prisma, 3, 100);
@@ -56,7 +57,7 @@ describe('Concert', () => {
     token2 = res2.body.data.token;
   });
 
-  describe('', () => {
+  describe('날짜 조회, 좌석 조회, 예약, 결제가 가능해야한다.', () => {
     it('should get concerts Dates', async () => {
       const res = await request(app.getHttpServer())
         .get('/concert/1/available-date')
@@ -97,6 +98,33 @@ describe('Concert', () => {
       await request(app.getHttpServer())
         .patch('/concert/1/pay')
         .set('Authorization', `Bearer ${token}`);
+    });
+  });
+
+  describe('should equal users requests count and reservation counts', () => {
+    const tokens: any[] = [];
+    beforeAll(async () => {
+      for (let i = 3; i < 301; i++) {
+        const tokenRes = await request(app.getHttpServer()).get(
+          `/user/${i}/token`,
+        );
+        // console.log(tokenRes.body);
+        tokens.push(tokenRes.body.data.token);
+      }
+    });
+
+    it('multiple request', async () => {
+      // const promises: any[] = [];
+      // for (let i = 3; i < 301; i++) {
+      //   const res = request(app.getHttpServer())
+      //     .get('/concert/1/available-date')
+      //     .set('Authorization', `Bearer ${tokens[i - 3]}`)
+      //     .expect(200);
+      //   promises.push(res);
+      // }
+      // const results = await Promise.allSettled(promises);
+      // const success = results.filter((r) => r.status === 'fulfilled');
+      // console.log(success.length);
     });
   });
 });

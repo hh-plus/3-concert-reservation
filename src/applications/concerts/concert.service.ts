@@ -6,8 +6,8 @@ import { NotFoundConcertException } from 'src/domains/concerts/exceptions/not-fo
 import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
 import { ConcertValidate } from 'src/domains/concerts/validations/concert.validate';
 import { PrismaService } from '@@prisma/prisma.service';
-import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
-import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
+import { ConcertDateModel } from 'src/domains/concerts/models/concert-date';
+import { ConcertDateUserModel } from 'src/domains/concerts/models/concert-date-user';
 import { PayConcertResDto } from 'src/apis/concerts/dto/pay-concert.dto';
 import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
 import { CashValidationService } from 'src/domains/cash/validation/cash.validation.service';

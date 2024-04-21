@@ -1,4 +1,4 @@
-import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
+import { ConcertDateUserModel } from 'src/domains/concerts/models/concert-date-user';
 import { AlreadyReserveSeatException } from '../exceptions/already-reserve-seat.exception';
 import { UnauthorizedException } from '@nestjs/common';
 
