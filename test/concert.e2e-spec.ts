@@ -7,14 +7,18 @@ import { UserMock } from './mock/users/user.mock';
 import { ConcertMock } from './mock/concerts/concert.mock';
 import { ConcertDateMock } from './mock/concerts/concert-date.mock';
 import * as request from 'supertest';
+import { JwtService } from '@nestjs/jwt';
+import { JwtManageService } from 'src/domains/users/jwt/jwt.service';
 
 const userCount = 300;
+const tokenJoinCount = 100;
 describe('Concert', () => {
   jest.setTimeout(100000);
 
   let app: INestApplication;
+  let jwtService: JwtManageService;
 
-  let prisma;
+  let prisma: PrismaService;
   let container;
 
   let token: string;
@@ -31,6 +35,8 @@ describe('Concert', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes();
     await app.init();
+
+    jwtService = new JwtManageService(new JwtService());
 
     // mock data
     const userMock = new UserMock(prisma, 300);
@@ -103,6 +109,7 @@ describe('Concert', () => {
 
   describe('should equal users requests count and reservation counts', () => {
     const tokens: any[] = [];
+    let payloads: any[] = [];
     beforeAll(async () => {
       for (let i = 3; i < 301; i++) {
         const tokenRes = await request(app.getHttpServer()).get(
@@ -111,20 +118,51 @@ describe('Concert', () => {
         // console.log(tokenRes.body);
         tokens.push(tokenRes.body.data.token);
       }
+      for (const t of tokens) {
+        const payload = await jwtService.verify(t);
+        payloads.push(payload);
+      }
     });
 
     it('multiple request', async () => {
-      // const promises: any[] = [];
-      // for (let i = 3; i < 301; i++) {
-      //   const res = request(app.getHttpServer())
-      //     .get('/concert/1/available-date')
-      //     .set('Authorization', `Bearer ${tokens[i - 3]}`)
-      //     .expect(200);
-      //   promises.push(res);
-      // }
-      // const results = await Promise.allSettled(promises);
-      // const success = results.filter((r) => r.status === 'fulfilled');
-      // console.log(success.length);
+      // 입장중인 트랜잭션이 tokenJoinCount보다 많다면 entryTime은 현재 시간보다 2분 이상 이후여야한다.
+
+      for (let i = 0; i < userCount; i++) {
+        if (i > tokenJoinCount && !!payloads[i]?.entryTime) {
+          console.log(new Date(payloads[i].entryTime));
+          expect(
+            new Date(payloads[i].entryTime).getTime(),
+          ).toBeGreaterThanOrEqual(new Date().getTime() + 1000 * 60 * 1);
+        }
+      }
+    });
+
+    it('같은 좌석에 여러명이 예약하면 1명만 예약되어야 한다.', async () => {
+      const promises: any[] = [];
+
+      for (let i = 3; i < 10; i++) {
+        promises.push(
+          request(app.getHttpServer())
+            .post('/concert/1/reserve')
+            .set('Authorization', `Bearer ${tokens[i - 3]}`)
+            .send({ seat: 2 }),
+        );
+      }
+
+      await Promise.allSettled(promises);
+      const reservedSeat = await prisma.concertDate.findFirst({
+        where: {
+          id: 1,
+        },
+        include: {
+          ConcertDateUser: true,
+        },
+      });
+      if (!reservedSeat) {
+        throw new Error('reservedSeat is null');
+      }
+
+      expect(reservedSeat.ConcertDateUser.length).toBe(1);
     });
   });
 });

@@ -19,7 +19,7 @@ import { UserRepository } from 'src/infrastructures/users/repositories/user.repo
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '5m' },
+      signOptions: { expiresIn: '2m' },
     }),
   ],
 

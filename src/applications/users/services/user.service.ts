@@ -40,15 +40,22 @@ export class UserService {
     checkExistUserToken(existUserToken);
 
     const tokens = await this.userTokenRepositoryPort.getAll();
+
+    const currentNumber =
+      this.userTokenDomainService.getCurrentJoinCount(tokens);
     const waitingNumber = this.userTokenDomainService.getWaitingCount(tokens);
 
-    const entryTime = this.jwtManageService.getEntryTime(waitingNumber);
+    const entryTime = this.jwtManageService.getEntryTime(
+      currentNumber,
+      waitingNumber,
+    );
 
     const token = this.jwtManageService.sign({
       userId,
       entryTime,
       waitingNumber,
     });
+
     await this.userTokenRepositoryPort.create(
       userId,
       entryTime,
