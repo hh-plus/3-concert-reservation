@@ -1,15 +1,17 @@
-FROM node:latest
+FROM node:18.19.0
 
 WORKDIR /app
 
-COPY package.json /app/package.json
+COPY package.json yarn.lock ./
 
-RUN yarn
+RUN yarn --frozen-lockfile
+
+COPY . .
+
 
 RUN npx prisma generate
 
-COPY . /app
-
+RUN npx prisma migrate dev
 
 EXPOSE 3000
 
