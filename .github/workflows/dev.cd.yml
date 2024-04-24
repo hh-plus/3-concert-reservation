@@ -60,11 +60,10 @@ jobs:
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ./.github/cd-sources/task-definition.json
+          task-definition: task-definition.json
           container-name: web
           image: ${{secrets.ECR_REGISTRY}}/concert:dev
-          environment-variables: "LOG_LEVEL=info"
-
+          environment-variables: 'LOG_LEVEL=info'
 
       - name: Deploy to Amazon ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
