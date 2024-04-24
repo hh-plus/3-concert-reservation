@@ -1,15 +1,24 @@
+### 도커 캐시 삭제 명령어
+
+- docker builder prune
+
 ## 브랜치 전략
+
 ### main
+
 - 실제 유저들에게 배포되어 있는 환경.
 - main을 업데이트 하기 전에 반드시 staging에서 QA팀과 테스트를 거쳐야한다.
 - main 브랜치는 push를 막고 반드시 PR로만 merge를 진행한다.
+
 ### staging
+
 - 실제 환경과 같은 환경으로 구축해 테스트 할 수 있도록 구축
 - staging에서 브랜치를 따서 dev에 merge를 하고, 해당 기능을 staging에 다시 merge한다.
 - 절대 dev를 staging에 merge하지 않는다.
-### dev
-- 개발 중인 기능을 테스트하는 브랜치
 
+### dev
+
+- 개발 중인 기능을 테스트하는 브랜치
 
 ### api docs
 
