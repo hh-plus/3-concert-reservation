@@ -56,17 +56,17 @@ jobs:
         uses: haythem/public-ip@v1.2
 
       - name: Render Amazon ECS task definition
-      id: render-web-container
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ../cd-sourses/task-definition.json
-        container-name: web
-        image: ${{secrets.ECR_REGISTRY}}/concert:dev
-        environment-variables: "LOG_LEVEL=info"
+        id: render-web-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ../cd-sourses/task-definition.json
+          container-name: web
+          image: ${{secrets.ECR_REGISTRY}}/concert:dev
+          environment-variables: "LOG_LEVEL=info"
 
-    - name: Deploy to Amazon ECS service
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.render-web-container.outputs.task-definition }}
-        service: my-service
-        cluster: my-cluster
+      - name: Deploy to Amazon ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+          service: my-service
+          cluster: my-cluster
