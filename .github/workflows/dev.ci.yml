@@ -1,0 +1,23 @@
+name: Node.js CI
+
+on:
+  pull_request:
+    branches: [dev]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.19.0]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: echo "${{secrets.dev_ENV}}" >> .env
+      - run: yarn
+      - run: npx prisma generate
+      - run: yarn test
+      - run: yarn test:e2e
