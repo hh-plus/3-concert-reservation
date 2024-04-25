@@ -8,7 +8,7 @@ import { UserTokenDomainService } from 'src/domains/users/user-token.domain.serv
 describe('UserService', () => {
   let service: UserService;
   let userRepositoryPort: UserTokenRepositoryPort;
-  let userDomainService: UserDomainService;
+
   let jwtService: JwtManageService;
   let userTokenDomainService: UserTokenDomainService;
 
@@ -17,7 +17,7 @@ describe('UserService', () => {
   beforeEach(async () => {
     userRepositoryPort = {
       getAll: jest.fn().mockResolvedValue([]),
-      getUserTokenByUserId: jest.fn().mockResolvedValue({ id: 1 }),
+      getUserTokenByUserId: jest.fn().mockResolvedValue(null),
       create: jest.fn().mockResolvedValue({ id: 1, userId: 1 }),
     };
 
@@ -33,7 +33,6 @@ describe('UserService', () => {
 
     service = new UserService(
       userRepositoryPort,
-      userDomainService,
       jwtService,
       userTokenDomainService,
     );

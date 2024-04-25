@@ -13,7 +13,7 @@ export class UserService {
   constructor(
     @Inject('userTokenRepositoryPort')
     private readonly userRepositoryPort: UserTokenRepositoryPort,
-    private readonly userDomainService: UserDomainService,
+
     private readonly jwtManageService: JwtManageService,
     private readonly userTokenDomainService: UserTokenDomainService,
   ) {}
