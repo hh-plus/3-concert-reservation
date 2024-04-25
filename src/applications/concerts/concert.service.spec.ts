@@ -3,11 +3,14 @@ import { ConcertService } from './concert.service';
 import { ConcertRepositoryPort } from './adapters/concert.repository.port';
 import { ConcertDomainService } from 'src/domains/concerts/concert.domain.service';
 import { PrismaService } from '@@prisma/prisma.service';
+import { CashService } from '../cash/cash.service';
+import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
 
 describe('ConcertService', () => {
   let service: ConcertService;
   let concertRepositoryPort: ConcertRepositoryPort;
   let concertDomainService: ConcertDomainService;
+  let cashRepositoryPort: CashRepositoryPort;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -33,6 +36,7 @@ describe('ConcertService', () => {
     service = new ConcertService(
       concertRepositoryPort,
       concertDomainService,
+      cashRepositoryPort,
       prismaService,
     );
   });
