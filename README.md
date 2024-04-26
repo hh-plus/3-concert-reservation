@@ -9,6 +9,7 @@
 - 절대 dev를 staging에 merge하지 않는다.
 ### dev
 - 개발 중인 기능을 테스트하는 브랜치
+- 현재 ci환경과 cd환경 github actions 작성 완료
 
 
 ### api docs
