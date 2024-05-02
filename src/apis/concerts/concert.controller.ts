@@ -23,7 +23,6 @@ import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
 
 import { ConcertServicePort } from './concert.service.port';
 import { PassTokenGuard } from 'src/guard/pass-token/pass-token.guard';
-import { ValidateWaitToken } from 'src/guard/redis/validate-token.guard';
 
 @Controller('concert')
 export class ConcertController {

@@ -5,27 +5,23 @@ import Redis from 'ioredis';
 export class RedisService {
   constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {}
 
-  getUserKey(userId: number): string {
-    return `user:${userId}`;
+  async get(key: string): Promise<number | null> {
+    // index 조회
+    const jsonData = await this.redis.zrank('wait-queue', key);
+
+    return jsonData;
   }
 
-  //   async get(key: string): Promise<object | null> {
-  //     const jsonData = await this.redis.get(key);
-  //     return jsonData ? JSON.parse(jsonData) : null;
-  //   }
+  async getPosition(token: string): Promise<number> {
+    const queue = await this.redis.zrange('wait-queue', 0, -1);
 
-  async getPosition(userId: number): Promise<number> {
-    const queue = await this.redis.lrange('queue', 0, -1);
-    console.log(queue);
-
-    const key = this.getUserKey(userId);
-    return queue.indexOf(key) + 1; // 위치 반환 (0-indexed라서 +1)
+    return queue.length - queue.indexOf(token) - 1; // 위치 반환 (0-indexed라서 +1)
   }
 
-  async joinQueue(userId: number) {
-    const key = this.getUserKey(userId);
-    await this.redis.lpush('queue', key);
-    await this.redis.expire(key, 300);
+  async joinQueue(token: string) {
+    const timestamp = Date.now();
+
+    await this.redis.zadd('wait-queue', timestamp, token);
   }
 
   //   async set(key: string, value: object): Promise<void> {

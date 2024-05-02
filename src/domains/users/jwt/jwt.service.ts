@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 interface payload {
   userId: number;
   entryTime: Date;
-  waitingNumber: number;
 }
 
 @Injectable()

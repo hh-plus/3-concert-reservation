@@ -5,6 +5,7 @@ import { JwtManageService } from '../../../domains/users/jwt/jwt.service';
 
 import { checkExistUserToken } from 'src/domains/users/validate/user-token.validate';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
+import { RedisService } from 'src/infrastructures/common/redis/redis.service';
 
 @Injectable()
 export class UserService {
@@ -14,31 +15,22 @@ export class UserService {
 
     private readonly jwtManageService: JwtManageService,
     private readonly userTokenDomainService: UserTokenDomainService,
+    private readonly redisService: RedisService,
   ) {}
 
   public async getOrCreate(userId: number): Promise<{ token: string }> {
-    const existUserToken = await this.userRepositoryPort.getUserTokenByUserId(
-      userId,
-    );
-
-    checkExistUserToken(existUserToken);
-
     const tokens = await this.userRepositoryPort.getAll();
-    const waitingNumber = this.userTokenDomainService.getWaitingCount(tokens);
 
-    const entryTime = this.jwtManageService.getEntryTime(waitingNumber);
+    // const waitingNumber = this.redisService.getPosition()
+
+    const entryTime = this.jwtManageService.getEntryTime(1);
 
     const token = this.jwtManageService.sign({
       userId,
       entryTime,
-      waitingNumber,
     });
 
-    await this.userRepositoryPort.create(
-      userId,
-      entryTime,
-      this.jwtManageService.getExpiredAt(entryTime),
-    );
+    await this.redisService.joinQueue(token);
 
     return {
       token,

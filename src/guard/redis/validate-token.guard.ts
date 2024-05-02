@@ -1,24 +1,29 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { RedisService } from 'src/infrastructures/common/redis/redis.service';
+import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
-export class ValidateWaitToken implements CanActivate {
+export class ValidateWaitTokenMiddleware implements NestMiddleware {
   constructor(private readonly redisService: RedisService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+  async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const token = req.headers['authorization']?.split('Bearer ')[1];
+    const userId = req.params.userId;
 
-    const userId = request.params.userId;
+    if (!token) {
+      next();
+      return;
+    }
 
-    await this.redisService.joinQueue(userId);
-    const value = await this.redisService.getPosition(userId);
-    console.log(value);
+    const key = await this.redisService.get(token);
+    console.log(key);
+    if (key !== null) {
+      const value = await this.redisService.getPosition(userId);
+      req.headers['position'] = value.toString();
+    }
 
-    return true;
+    res.status(200).json({
+      message: 'success',
+    });
   }
 }
