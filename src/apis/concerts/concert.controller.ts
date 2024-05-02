@@ -23,7 +23,7 @@ import { GetAvailableSeatsResDto } from './dto/get-available-seats.dto';
 
 import { ConcertServicePort } from './concert.service.port';
 import { PassTokenGuard } from 'src/guard/pass-token/pass-token.guard';
-import { PayConcertResDto } from './dto/pay-concert.dto';
+import { ValidateWaitToken } from 'src/guard/redis/validate-token.guard';
 
 @Controller('concert')
 export class ConcertController {
@@ -109,7 +109,7 @@ export class ConcertController {
     @Param('concertDateUserId', ParseIntPipe) concertDateUserId: number,
     @Request() req: any,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = req.user?.id ?? 1;
     await this.concertService.payConcert(concertId, concertDateUserId, userId);
   }
 }

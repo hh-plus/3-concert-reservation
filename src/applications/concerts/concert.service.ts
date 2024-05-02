@@ -6,11 +6,11 @@ import { NotFoundConcertException } from 'src/domains/concerts/exceptions/not-fo
 import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
 import { ConcertValidate } from 'src/domains/concerts/validations/concert.validate';
 import { PrismaService } from '@@prisma/prisma.service';
-import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
-import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
-import { PayConcertResDto } from 'src/apis/concerts/dto/pay-concert.dto';
+
 import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
 import { CashValidationService } from 'src/domains/cash/validation/cash.validation.service';
+
+import { RedisService } from 'src/infrastructures/common/redis/redis.service';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -24,6 +24,8 @@ export class ConcertService implements ConcertServicePort {
     private readonly cashRepositoryPort: CashRepositoryPort,
 
     private readonly prismaService: PrismaService,
+
+    private readonly redisService: RedisService,
   ) {}
 
   async getAvailableDate(concertId: number) {

@@ -13,8 +13,11 @@ import { ConcertRepository } from 'src/infrastructures/concerts/repositories/con
 import { CashFactory } from 'src/infrastructures/cash/repositories/cash.factory';
 import { CashRepository } from 'src/infrastructures/cash/repositories/cash.repository';
 import { CashReaderRepository } from 'src/infrastructures/cash/repositories/cash.reader.repository';
+import { RedisModule } from 'src/infrastructures/common/redis/redis.module';
+import { RedisManager } from '@liaoliaots/nestjs-redis';
 
 @Module({
+  imports: [RedisModule],
   controllers: [ConcertController],
   providers: [
     PrismaService,

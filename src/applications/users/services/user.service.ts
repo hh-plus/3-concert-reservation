@@ -1,10 +1,8 @@
-import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UserTokenRepositoryPort } from './port/user-token.repository.port';
 
 import { JwtManageService } from '../../../domains/users/jwt/jwt.service';
-import { UserToken } from '@prisma/client';
-import { UserDomainService } from 'src/domains/users/user.domain.service';
-import { UserValidateService } from 'src/domains/users/validate/user.validate.service';
+
 import { checkExistUserToken } from 'src/domains/users/validate/user-token.validate';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
 
