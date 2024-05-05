@@ -4,16 +4,22 @@ import { CashLogModel } from 'src/infrastructures/cash/models/cash-log.model';
 
 export class CashValidationService {
   static validateCash(cash: number) {
-    if (cash < 0) {
-      throw new InvalidCashException();
+    if (!cash) {
+      throw new InvalidCashException('cash is required');
     }
 
-    if (cash % 1000 !== 0) {
+    if (cash < 0) {
       throw new InvalidCashException();
     }
 
     if (cash > 1000000) {
       throw new InvalidCashException();
+    }
+  }
+
+  static validateChargeCash(cash: number, amount: number) {
+    if (cash < amount) {
+      throw new InvalidCashException('Not enough cash.');
     }
   }
 
