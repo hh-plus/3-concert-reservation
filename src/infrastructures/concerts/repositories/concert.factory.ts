@@ -89,9 +89,9 @@ export class ConcertFactory implements ConcertRepositoryPort {
           seat,
           expiredAt,
         );
+
       return ConcertMapper.convertingConcertDateUser(concertDateUser);
     } catch (err) {
-      console.error(err);
       throw new ConflictException('이미 예약된 좌석입니다.');
     }
   }

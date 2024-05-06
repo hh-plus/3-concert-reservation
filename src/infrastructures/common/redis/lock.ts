@@ -15,11 +15,10 @@ export class RedisLock {
     });
   }
 
-  async lockUser(userId: number) {
-    const result = await this.redis.setnx(`user-lock:${userId}`, 'lock');
-    if (result === 0) {
-      throw new Error('User is already locked');
-    }
+  async lockUser(userId: number): Promise<boolean> {
+    return (await this.redis.setnx(`user-lock:${userId}`, 'lock')) === 1
+      ? true
+      : false;
   }
 
   async unlockUser(userId: number) {

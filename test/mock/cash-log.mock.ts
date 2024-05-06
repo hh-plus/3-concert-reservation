@@ -2,9 +2,12 @@ import { PrismaService } from '@@prisma/prisma.service';
 import { cashLogType } from '@prisma/client';
 
 export class CashLogMock {
-  constructor(private prismaService: PrismaService) {}
+  constructor() {}
 
-  async insertCashLog(userIds: number[]): Promise<void> {
+  static async insertCashLog(
+    prisma: PrismaService,
+    userIds: number[],
+  ): Promise<void> {
     const cashLogs = userIds.map((userId) => {
       return {
         userId,
@@ -15,7 +18,7 @@ export class CashLogMock {
       };
     });
 
-    await this.prismaService.cashLog.createMany({
+    await prisma.cashLog.createMany({
       data: cashLogs,
     });
   }

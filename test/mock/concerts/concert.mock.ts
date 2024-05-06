@@ -14,7 +14,7 @@ export class ConcertMock {
       this.concerts.push({
         id: i,
         name: `concert${i}`,
-        price: 10000,
+        price: 3000,
         maxSeats,
         createdAt: new Date(),
         updatedAt: new Date(),

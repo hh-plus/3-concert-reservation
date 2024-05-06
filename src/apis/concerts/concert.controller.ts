@@ -108,7 +108,7 @@ export class ConcertController {
     @Param('concertDateUserId', ParseIntPipe) concertDateUserId: number,
     @Request() req: any,
   ): Promise<void> {
-    const userId = req.user?.id ?? 1;
+    const userId = req.user?.userId ?? 1;
     await this.concertService.payConcert(concertId, concertDateUserId, userId);
   }
 }
