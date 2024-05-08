@@ -5,32 +5,37 @@ import Redis from 'ioredis';
 export class RedisService {
   constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {}
 
-  async get(key: string): Promise<number | null> {
-    // index 조회
-    const jsonData = await this.redis.zrank('wait-queue', key);
-
-    return jsonData;
+  async getCount(key: string) {
+    return await this.redis.zcard(key);
   }
 
-  async getPosition(token: string): Promise<number> {
-    const queue = await this.redis.zrange('wait-queue', 0, -1);
-
-    return queue.length - queue.indexOf(token) - 1; // 위치 반환 (0-indexed라서 +1)
+  async getWatingDate(key: string) {
+    const count = await this.getCount(key);
+    // 100명당 30초씩 현재시간에서 더해준다.
+    return Date.now() + Math.floor(count / 100) * 30 * 1000;
   }
 
-  async joinQueue(token: string) {
-    const timestamp = Date.now();
-
-    await this.redis.zadd('wait-queue', timestamp, token);
+  async getRanking(key: string, userId: number): Promise<number | null> {
+    return await this.redis.zrank(key, userId);
   }
 
-  //   async set(key: string, value: object): Promise<void> {
-  //     const json = JSON.stringify(value);
+  async addQueue(key: string, userId: number, score = Date.now()) {
+    await this.redis.zadd(key, score, userId);
+  }
 
-  //     await this.redis.setex(key, 300, json);
-  //   }
+  async removeBeforeDate(key: string) {
+    await this.redis.zremrangebyscore(key, 0, Date.now());
+  }
 
-  async del(key: string): Promise<void> {
-    await this.redis.del(key);
+  async removeWatingQueue(key: string, userId: number) {
+    await this.redis.zrem(key, userId);
+  }
+
+  async getRankOrAddQueue(key: string, userId: number) {
+    const rank = await this.getRanking(key, userId);
+    if (!rank) {
+      await this.addQueue(key, userId, await this.getWatingDate(key));
+    }
+    return rank;
   }
 }

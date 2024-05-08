@@ -11,7 +11,7 @@ import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
 import { CashValidationService } from 'src/domains/cash/validation/cash.validation.service';
 
 import { RedisService } from 'src/infrastructures/common/redis/redis.service';
-import { RedisLock } from 'src/infrastructures/common/redis/lock';
+import { RedisLock } from 'src/infrastructures/common/redis/redis.lock';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {

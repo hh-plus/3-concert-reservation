@@ -6,6 +6,7 @@ import { JwtManageService } from '../../../domains/users/jwt/jwt.service';
 import { checkExistUserToken } from 'src/domains/users/validate/user-token.validate';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
 import { RedisService } from 'src/infrastructures/common/redis/redis.service';
+import { getConcertWatingTokenKey } from 'src/common/libs/get-wating-token-key';
 
 @Injectable()
 export class UserService {
@@ -19,18 +20,27 @@ export class UserService {
   ) {}
 
   public async getOrCreate(userId: number): Promise<{ token: string }> {
-    const tokens = await this.userRepositoryPort.getAll();
-
     // const waitingNumber = this.redisService.getPosition()
 
-    const entryTime = this.jwtManageService.getEntryTime(1);
+    const waitingCount = await this.redisService.getCount(
+      getConcertWatingTokenKey(),
+    );
+    console.log(waitingCount);
+    const entryTime = this.jwtManageService.getEntryTime(waitingCount);
 
     const token = this.jwtManageService.sign({
       userId,
       entryTime,
     });
 
-    await this.redisService.joinQueue(token);
+    // entryTime을 unix timestamp 로 변환
+    const unixTime = new Date(entryTime).getTime();
+    console.log(unixTime);
+    await this.redisService.addQueue(
+      getConcertWatingTokenKey(),
+      userId,
+      unixTime,
+    );
 
     return {
       token,

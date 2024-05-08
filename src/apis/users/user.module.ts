@@ -10,7 +10,7 @@ import { UserDomainService } from 'src/domains/users/user.domain.service';
 import { UserTokenFactory } from 'src/infrastructures/users/repositories/user-token.factory';
 import { UserTokenReaderRepository } from 'src/infrastructures/users/repositories/user-token/user-token.reader.repository';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
-import { ValidateWaitTokenMiddleware } from 'src/guard/redis/validate-token.guard';
+import { ValidateWaitTokenMiddleware } from 'src/common/guard/redis/validate-token.guard';
 
 @Module({
   imports: [

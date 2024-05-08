@@ -1,7 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import Redis from 'ioredis';
 import { RedisService } from './redis.service';
-import { RedisLock } from './lock';
+import { RedisLock } from './redis.lock';
 
 @Global()
 @Module({
