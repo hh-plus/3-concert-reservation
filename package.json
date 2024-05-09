@@ -34,6 +34,7 @@
     "@nestjs/schedule": "^4.0.2",
     "@prisma/client": "^5.12.1",
     "@testcontainers/postgresql": "^10.8.2",
+    "@testcontainers/redis": "^10.9.0",
     "@types/mime": "^4.0.0",
     "ioredis": "^5.4.1",
     "reflect-metadata": "^0.1.13",
@@ -65,26 +66,5 @@
     "ts-patch": "^3.1.2",
     "tsconfig-paths": "4.2.0",
     "typescript": "5.4.2"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "moduleNameMapper": {
-      "src/(.*)$": "<rootDir>/src/$1",
-      "^@@prisma/(.*)$": "<rootDir>/prisma/$1"
-    },
-    "rootDir": ".",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }

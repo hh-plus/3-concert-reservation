@@ -10,8 +10,8 @@ import { RedisLock } from './redis.lock';
       provide: 'REDIS_CLIENT',
       useFactory: () => {
         return new Redis({
-          host: 'localhost', // Redis 서버 주소
-          port: 16379, // Redis 포트 번호
+          host: process.env.REDIS_HOST, // Redis 서버 주소
+          port: Number(process.env.REDIS_PORT), // Redis 포트 번호
 
           db: 0, // DB 인덱스
         });
