@@ -57,10 +57,36 @@ describe('Concert', () => {
     expect(res.body.data).toEqual({
       token: expect.any(String),
     });
-    token = res.body.data.token;
+
+    let activeRes = await request(app.getHttpServer())
+      .get('/user/1/token')
+      .set('Authorization', `Bearer ${res.body.data.token}`);
+
+    while (activeRes.body.token === '') {
+      activeRes = await request(app.getHttpServer())
+        .get('/user/1/token')
+        .set('Authorization', `Bearer ${res.body.data.token}`);
+      // 1초 대기
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    token = activeRes.body.token;
 
     const res2 = await request(app.getHttpServer()).get('/user/2/token');
-    token2 = res2.body.data.token;
+
+    let activeRes2 = await request(app.getHttpServer())
+      .get('/user/2/token')
+      .set('Authorization', `Bearer ${res2.body.data.token}`);
+
+    while (activeRes2.body.token === '') {
+      activeRes2 = await request(app.getHttpServer())
+        .get('/user/2/token')
+        .set('Authorization', `Bearer ${res2.body.data.token}`);
+      // 1초 대기
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    token2 = activeRes2.body.token;
   });
 
   describe('결제 과정이 정상적으로 진행되어야 한다.', () => {
@@ -140,5 +166,9 @@ describe('Concert', () => {
       // 200은 2개여야한다. 7000 포인트를 가지고 있고 3000 포인트를 2번 결제
       expect(statusArr.filter((s) => s === 200).length).toBe(2);
     });
+  });
+
+  afterAll(async () => {
+    await container.stop();
   });
 });

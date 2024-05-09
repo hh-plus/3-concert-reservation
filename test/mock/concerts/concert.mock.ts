@@ -27,8 +27,6 @@ export class ConcertMock {
       data: this.concerts,
     });
 
-    console.log('insert concert : ' + this.concerts.length);
-
     return this.concerts;
   }
 }

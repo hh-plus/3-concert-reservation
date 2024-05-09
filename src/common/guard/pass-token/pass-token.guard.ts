@@ -32,13 +32,13 @@ export class PassTokenGuard implements CanActivate {
         getConcertActiveTokenKey(),
         token,
       );
+
       if (rank === null) {
         throw new UnauthorizedException();
       }
 
       request['user'] = payload;
     } catch (err) {
-      console.log(err);
       throw new UnauthorizedException();
     }
 

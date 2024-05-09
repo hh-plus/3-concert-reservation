@@ -16,9 +16,7 @@ export class CronService {
     if (memberCount === 0) {
       // console.log('No members in queue, skipping...');
     } else {
-      // 예를 들어, 만료된 멤버를 처리하는 로직
       await this.redisService.removeBeforeDate(getConcertWatingTokenKey());
-      console.log('delete!');
     }
   }
 }

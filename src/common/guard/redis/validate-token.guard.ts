@@ -24,9 +24,9 @@ export class ValidateWaitTokenMiddleware implements NestMiddleware {
     }
 
     const key = getConcertWatingTokenKey();
-    console.log(userId);
+
     let ranking = await this.redisService.getRanking(key, Number(userId));
-    console.log(ranking);
+
     // 토큰이 있는데 랭킹이 없다면 웨이팅이 끝난 것임.
     // 즉, 해당 토큰을 입장시키고, redis에 active 토큰을 추가해준다.
     // score에는 현재 시간을 넣어주고
@@ -37,7 +37,11 @@ export class ValidateWaitTokenMiddleware implements NestMiddleware {
         userId: Number(userId),
         entryTime: new Date(),
       });
-      await this.redisService.addQueue(activeKey, token, new Date().getTime());
+      await this.redisService.addQueue(
+        activeKey,
+        activeToken,
+        new Date().getTime(),
+      );
       res.status(200).json({
         message: 'success',
         waitCount: 0,
