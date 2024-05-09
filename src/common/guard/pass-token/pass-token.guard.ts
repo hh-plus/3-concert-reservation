@@ -38,6 +38,7 @@ export class PassTokenGuard implements CanActivate {
 
       request['user'] = payload;
     } catch (err) {
+      console.log(err);
       throw new UnauthorizedException();
     }
 

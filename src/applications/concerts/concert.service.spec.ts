@@ -5,6 +5,7 @@ import { ConcertDomainService } from 'src/domains/concerts/concert.domain.servic
 import { PrismaService } from '@@prisma/prisma.service';
 import { CashService } from '../cash/cash.service';
 import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
+import { RedisLock } from 'src/infrastructures/common/redis/redis.lock';
 
 describe('ConcertService', () => {
   let service: ConcertService;
@@ -12,6 +13,7 @@ describe('ConcertService', () => {
   let concertDomainService: ConcertDomainService;
   let cashRepositoryPort: CashRepositoryPort;
   let prismaService: PrismaService;
+  let redisLock: RedisLock;
 
   beforeEach(async () => {
     concertRepositoryPort = {
@@ -32,12 +34,17 @@ describe('ConcertService', () => {
       getAvailableSeats: jest.fn(),
       getExpriedAt: jest.fn(),
     };
+    let mockRedis: any = {};
+    redisLock = new RedisLock(mockRedis);
+
+    redisLock.lockUser = jest.fn().mockResolvedValue(true);
 
     service = new ConcertService(
       concertRepositoryPort,
       concertDomainService,
       cashRepositoryPort,
       prismaService,
+      redisLock,
     );
   });
 

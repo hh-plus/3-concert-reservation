@@ -15,8 +15,11 @@ export class RedisService {
     return Date.now() + Math.floor(count / 100) * 30 * 1000;
   }
 
-  async getRanking(key: string, userId: number): Promise<number | null> {
-    return await this.redis.zrank(key, userId);
+  async getRanking(
+    key: string,
+    member: number | string,
+  ): Promise<number | null> {
+    return await this.redis.zrank(key, member);
   }
 
   async addQueue(key: string, member: number | string, score = Date.now()) {
