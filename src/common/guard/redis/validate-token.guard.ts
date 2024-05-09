@@ -33,15 +33,11 @@ export class ValidateWaitTokenMiddleware implements NestMiddleware {
     // 5분짜리 jwt토큰을 만들어서 반환해준다.
     if (ranking == null) {
       const activeKey = getConcertActiveTokenKey();
-      await this.redisService.addQueue(
-        activeKey,
-        Number(userId),
-        new Date().getTime(),
-      );
       const activeToken = this.jwtService.sign({
         userId: Number(userId),
         entryTime: new Date(),
       });
+      await this.redisService.addQueue(activeKey, token, new Date().getTime());
       res.status(200).json({
         message: 'success',
         waitCount: 0,

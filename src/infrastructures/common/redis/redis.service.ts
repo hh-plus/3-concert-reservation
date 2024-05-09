@@ -19,8 +19,8 @@ export class RedisService {
     return await this.redis.zrank(key, userId);
   }
 
-  async addQueue(key: string, userId: number, score = Date.now()) {
-    await this.redis.zadd(key, score, userId);
+  async addQueue(key: string, member: number | string, score = Date.now()) {
+    await this.redis.zadd(key, score, member);
   }
 
   async removeBeforeDate(key: string) {

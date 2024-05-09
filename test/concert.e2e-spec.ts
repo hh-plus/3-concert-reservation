@@ -137,7 +137,7 @@ describe('Concert', () => {
         }
       });
 
-      // 200은 2개여야한다.
+      // 200은 2개여야한다. 7000 포인트를 가지고 있고 3000 포인트를 2번 결제
       expect(statusArr.filter((s) => s === 200).length).toBe(2);
     });
   });
