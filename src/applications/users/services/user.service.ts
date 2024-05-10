@@ -1,45 +1,39 @@
-import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
-import { UserTokenRepositoryPort } from './port/user-token.repository.port';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { JwtManageService } from '../../../domains/users/jwt/jwt.service';
-import { UserToken } from '@prisma/client';
-import { UserDomainService } from 'src/domains/users/user.domain.service';
-import { UserValidateService } from 'src/domains/users/validate/user.validate.service';
-import { checkExistUserToken } from 'src/domains/users/validate/user-token.validate';
-import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
+
+import { RedisService } from 'src/infrastructures/common/redis/redis.service';
+import { getConcertWatingTokenKey } from 'src/common/libs/get-wating-token-key';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('userTokenRepositoryPort')
-    private readonly userRepositoryPort: UserTokenRepositoryPort,
-    private readonly userDomainService: UserDomainService,
     private readonly jwtManageService: JwtManageService,
-    private readonly userTokenDomainService: UserTokenDomainService,
+
+    private readonly redisService: RedisService,
   ) {}
 
   public async getOrCreate(userId: number): Promise<{ token: string }> {
-    const existUserToken = await this.userRepositoryPort.getUserTokenByUserId(
-      userId,
+    // const waitingNumber = this.redisService.getPosition()
+
+    const waitingCount = await this.redisService.getCount(
+      getConcertWatingTokenKey(),
     );
 
-    checkExistUserToken(existUserToken);
-
-    const tokens = await this.userRepositoryPort.getAll();
-    const waitingNumber = this.userTokenDomainService.getWaitingCount(tokens);
-
-    const entryTime = this.jwtManageService.getEntryTime(waitingNumber);
+    const entryTime = this.jwtManageService.getEntryTime(waitingCount);
 
     const token = this.jwtManageService.sign({
       userId,
       entryTime,
-      waitingNumber,
     });
 
-    await this.userRepositoryPort.create(
+    // entryTime을 unix timestamp 로 변환
+    const unixTime = new Date(entryTime).getTime();
+
+    await this.redisService.addQueue(
+      getConcertWatingTokenKey(),
       userId,
-      entryTime,
-      this.jwtManageService.getExpiredAt(entryTime),
+      unixTime,
     );
 
     return {

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 
 import { GetCashResDto } from './dtos/get-cash.dto';
 import { ChargeCashReqBodyDto } from './dtos/charge-cash.dto';
@@ -35,7 +43,7 @@ export class CashController {
    */
   @Post('/:userId/charge')
   async chargeCash(
-    @Param('userId') userId: number,
+    @Param('userId', ParseIntPipe) userId: number,
     @Body() body: ChargeCashReqBodyDto,
   ): Promise<void> {
     return await this.cashService.charge(userId, body.cash);

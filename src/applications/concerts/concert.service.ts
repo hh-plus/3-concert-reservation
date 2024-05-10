@@ -6,11 +6,12 @@ import { NotFoundConcertException } from 'src/domains/concerts/exceptions/not-fo
 import { ReserveConcertReqDto } from 'src/apis/concerts/dto/reserve-concert.dto';
 import { ConcertValidate } from 'src/domains/concerts/validations/concert.validate';
 import { PrismaService } from '@@prisma/prisma.service';
-import { ConcertDateModel } from 'src/infrastructures/concerts/models/concert-date';
-import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
-import { PayConcertResDto } from 'src/apis/concerts/dto/pay-concert.dto';
+
 import { CashRepositoryPort } from '../cash/adapters/cash.repository.port';
 import { CashValidationService } from 'src/domains/cash/validation/cash.validation.service';
+
+import { RedisService } from 'src/infrastructures/common/redis/redis.service';
+import { RedisLock } from 'src/infrastructures/common/redis/redis.lock';
 
 @Injectable()
 export class ConcertService implements ConcertServicePort {
@@ -24,6 +25,8 @@ export class ConcertService implements ConcertServicePort {
     private readonly cashRepositoryPort: CashRepositoryPort,
 
     private readonly prismaService: PrismaService,
+
+    private readonly redisLock: RedisLock,
   ) {}
 
   async getAvailableDate(concertId: number) {
@@ -81,9 +84,7 @@ export class ConcertService implements ConcertServicePort {
           reserveConcertReqDto.seat,
         );
 
-      ConcertValidate.checkSeatExist(concertDateUser);
-
-      if (!ConcertValidate.checkExpiredSeat) {
+      if (concertDateUser && !ConcertValidate.checkExpiredSeat) {
         await this.concertRepositoryPort.deleteConcertDateUser(
           tx,
           concertDateUser.id,
@@ -106,31 +107,60 @@ export class ConcertService implements ConcertServicePort {
     concertDateUserId: number,
     userId: number,
   ): Promise<void> {
-    const userCashLog = await this.cashRepositoryPort.getCashListByUserId(
-      userId,
-    );
-    const concert = await this.concertRepositoryPort.getConcertById(concertId);
+    const retry = 10;
+    let count = 0;
 
-    if (!concert) {
-      throw new NotFoundConcertException();
+    while (count < retry) {
+      const lock = await this.redisLock.lockUser(userId);
+      if (lock) {
+        try {
+          // await this.redisLock.lockUser(userId);
+          const userCashLog = await this.cashRepositoryPort.getCashListByUserId(
+            userId,
+          );
+          const concert = await this.concertRepositoryPort.getConcertById(
+            concertId,
+          );
+
+          if (!concert) {
+            throw new NotFoundConcertException();
+          }
+
+          const cash = CashValidationService.getCashByCashLog(userCashLog);
+          ConcertValidate.checkCashGreaterThanPrice(cash, concert.price);
+
+          const concertDateUser =
+            await this.concertRepositoryPort.getConcertDateUserById(
+              concertDateUserId,
+            );
+
+          ConcertValidate.checkSeatExist(concertDateUser);
+          ConcertValidate.checkAvailableUser(concertDateUser, userId);
+          ConcertValidate.checkExpiredSeat(concertDateUser);
+
+          concertDateUser.payStatus = 'PAID';
+
+          return await this.prismaService.$transaction(async (tx) => {
+            await this.cashRepositoryPort.use(userId, concert.price);
+
+            return await this.concertRepositoryPort.updateConcertDateUser(
+              tx,
+              concertDateUser,
+            );
+          });
+        } catch (err) {
+          throw new Error(err);
+        } finally {
+          await this.redisLock.unlockUser(userId);
+        }
+      }
+
+      if (!lock) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        count++;
+        continue;
+      }
     }
-
-    const cash = CashValidationService.getCashByCashLog(userCashLog);
-    ConcertValidate.checkCashGreaterThanPrice(cash, concert.price);
-
-    const concertDateUser =
-      await this.concertRepositoryPort.getConcertDateUserById(
-        concertDateUserId,
-      );
-    ConcertValidate.checkSeatExist(concertDateUser);
-    ConcertValidate.checkAvailableUser(concertDateUser, userId);
-    ConcertValidate.checkExpiredSeat(concertDateUser);
-
-    return await this.prismaService.$transaction(async (tx) => {
-      return await this.concertRepositoryPort.updateConcertDateUser(
-        tx,
-        concertDateUser,
-      );
-    });
+    throw new Error('Failed to get lock');
   }
 }

@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 interface payload {
   userId: number;
   entryTime: Date;
-  waitingNumber: number;
 }
 
 @Injectable()
@@ -23,7 +22,7 @@ export class JwtManageService {
   getEntryTime(waitingCount: number) {
     const now = new Date();
     now.setDate(
-      now.getDate() + Math.floor(waitingCount / this.permitEntryNumber),
+      now.getDate() + 10000 * Math.floor(waitingCount / this.permitEntryNumber),
     );
     return now;
   }

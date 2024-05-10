@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { UserService } from '../../applications/users/services/user.service';
 import { UserController } from './user.controller';
 import { UserTokenRepositoryPort } from '../../applications/users/services/port/user-token.repository.port';
@@ -10,6 +10,7 @@ import { UserDomainService } from 'src/domains/users/user.domain.service';
 import { UserTokenFactory } from 'src/infrastructures/users/repositories/user-token.factory';
 import { UserTokenReaderRepository } from 'src/infrastructures/users/repositories/user-token/user-token.reader.repository';
 import { UserTokenDomainService } from 'src/domains/users/user-token.domain.service';
+import { ValidateWaitTokenMiddleware } from 'src/common/guard/redis/validate-token.guard';
 
 @Module({
   imports: [
@@ -38,4 +39,10 @@ import { UserTokenDomainService } from 'src/domains/users/user-token.domain.serv
     UserTokenReaderRepository,
   ],
 })
-export class UserModule {}
+export class UserModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ValidateWaitTokenMiddleware)
+      .forRoutes('/user/:userId/token');
+  }
+}

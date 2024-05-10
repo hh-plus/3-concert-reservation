@@ -1,16 +1,29 @@
 import { JwtService } from '@nestjs/jwt';
 import { PassTokenGuard } from './pass-token.guard';
+import { RedisService } from 'src/infrastructures/common/redis/redis.service';
+import { getConcertActiveTokenKey } from 'src/common/libs/get-wating-token-key';
 
+jest.mock('src/common/libs/get-wating-token-key', () => {
+  return {
+    getConcertWatingTokenKey: jest.fn().mockReturnValue('key'),
+    getConcertActiveTokenKey: jest.fn().mockReturnValue('key'),
+  };
+});
 describe('PassTokenGuard', () => {
   let jwtService: JwtService;
   let passTokenGuard: PassTokenGuard;
+  let redisService: any;
 
   beforeEach(() => {
     jwtService = {
       verifyAsync: jest.fn(),
     } as any;
 
-    passTokenGuard = new PassTokenGuard(jwtService);
+    redisService = {
+      getRanking: jest.fn().mockResolvedValue(1),
+    };
+
+    passTokenGuard = new PassTokenGuard(jwtService, redisService);
   });
 
   it('should be defined', () => {

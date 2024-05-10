@@ -1,6 +1,6 @@
 import { ConcertDateUserModel } from 'src/infrastructures/concerts/models/concert-date-user';
 import { AlreadyReserveSeatException } from '../exceptions/already-reserve-seat.exception';
-import { UnauthorizedException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 
 export class ConcertValidate {
   static checkFullSeats(
@@ -13,8 +13,8 @@ export class ConcertValidate {
   static checkSeatExist(
     concertDateUser: ConcertDateUserModel | null,
   ): asserts concertDateUser is ConcertDateUserModel {
-    if (concertDateUser) {
-      throw new AlreadyReserveSeatException();
+    if (!concertDateUser) {
+      throw new ConflictException('Not exist seat');
     }
   }
 
@@ -30,13 +30,13 @@ export class ConcertValidate {
     userId: number,
   ) {
     if (concertDateUser.userId !== userId) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Not available user');
     }
   }
 
   static checkCashGreaterThanPrice(cash: number, price: number) {
     if (cash < price) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Not enough cash');
     }
   }
 }

@@ -22,4 +22,8 @@ export class CashFactory implements CashRepositoryPort {
   async charge(userId: number, cash: number): Promise<void> {
     await this.cashRepository.createCashLog(userId, cash, 'CHARGE');
   }
+
+  async use(userId: number, cash: number): Promise<void> {
+    await this.cashRepository.createCashLog(userId, cash, 'USE');
+  }
 }

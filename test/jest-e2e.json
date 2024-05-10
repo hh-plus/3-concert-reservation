@@ -3,12 +3,16 @@
   "rootDir": "../",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
+
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
+
   "moduleNameMapper": {
     "@app/(.*)": "<rootDir>/src/$1",
     "@@prisma/(.*)": "<rootDir>/prisma/$1",
-    "src/(.*)": "<rootDir>/src/$1"
-  }
+    "src/(.*)": "<rootDir>/src/$1",
+    "cron/(.*)": "<rootDir>/cron/$1"
+  },
+  "globalSetup": "./test/e2e-global-setting.ts"
 }

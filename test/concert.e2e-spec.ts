@@ -7,18 +7,20 @@ import { UserMock } from './mock/user.mock';
 import { ConcertMock } from './mock/concerts/concert.mock';
 import { ConcertDateMock } from './mock/concerts/concert-date.mock';
 import * as request from 'supertest';
+import { CashLogMock } from './mock/cash-log.mock';
 
 describe('Concert', () => {
   jest.setTimeout(100000);
 
   let app: INestApplication;
 
-  let prisma;
+  let prisma: PrismaService;
   let container;
+  let newUsers;
 
   let token: string;
   let token2: string;
-  beforeEach(async () => {
+  beforeAll(async () => {
     ({ prisma, container } = await setupPrismaService());
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -32,8 +34,13 @@ describe('Concert', () => {
     await app.init();
 
     // mock data
-    const userMock = new UserMock(prisma, 10);
-    await userMock.insert();
+    const userMock = new UserMock(prisma, 15);
+    newUsers = await userMock.insert();
+
+    await CashLogMock.insertCashLog(
+      prisma,
+      newUsers.map((u) => u.id),
+    );
 
     const concertMock = new ConcertMock(prisma, 3, 100);
     const newConcerts = await concertMock.insert();
@@ -50,13 +57,39 @@ describe('Concert', () => {
     expect(res.body.data).toEqual({
       token: expect.any(String),
     });
-    token = res.body.data.token;
+
+    let activeRes = await request(app.getHttpServer())
+      .get('/user/1/token')
+      .set('Authorization', `Bearer ${res.body.data.token}`);
+
+    while (activeRes.body.token === '') {
+      activeRes = await request(app.getHttpServer())
+        .get('/user/1/token')
+        .set('Authorization', `Bearer ${res.body.data.token}`);
+      // 1초 대기
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    token = activeRes.body.token;
 
     const res2 = await request(app.getHttpServer()).get('/user/2/token');
-    token2 = res2.body.data.token;
+
+    let activeRes2 = await request(app.getHttpServer())
+      .get('/user/2/token')
+      .set('Authorization', `Bearer ${res2.body.data.token}`);
+
+    while (activeRes2.body.token === '') {
+      activeRes2 = await request(app.getHttpServer())
+        .get('/user/2/token')
+        .set('Authorization', `Bearer ${res2.body.data.token}`);
+      // 1초 대기
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    token2 = activeRes2.body.token;
   });
 
-  describe('', () => {
+  describe('결제 과정이 정상적으로 진행되어야 한다.', () => {
     it('should get concerts Dates', async () => {
       const res = await request(app.getHttpServer())
         .get('/concert/1/available-date')
@@ -95,8 +128,47 @@ describe('Concert', () => {
       expect(res2.error).toBeDefined();
 
       await request(app.getHttpServer())
-        .patch('/concert/1/pay')
+        .patch('/concert/1/1/pay')
         .set('Authorization', `Bearer ${token}`);
     });
+  });
+
+  describe('동시성 테스트', () => {
+    it('should can reserve to concerts by many users', async () => {
+      for (let i = 3; i < 10; i++) {
+        await request(app.getHttpServer())
+          .post(`/concert/1/reserve`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+            seat: i + 1,
+          });
+      }
+
+      // 동시에 결제를 시도하면 포인트 계산을 정확히 해야한다.
+      const promises: any[] = [];
+
+      for (let i = 3; i < 10; i++) {
+        promises.push(
+          request(app.getHttpServer())
+            .patch(`/concert/1/${i}/pay`)
+            .set('Authorization', `Bearer ${token}`),
+        );
+      }
+
+      const result = await Promise.allSettled(promises);
+
+      const statusArr = result.map((r) => {
+        if (r.status === 'fulfilled') {
+          return r.value.status;
+        }
+      });
+
+      // 200은 2개여야한다. 7000 포인트를 가지고 있고 3000 포인트를 2번 결제
+      expect(statusArr.filter((s) => s === 200).length).toBe(2);
+    });
+  });
+
+  afterAll(async () => {
+    await container.stop();
   });
 });

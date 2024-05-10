@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Req,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 
 import { GetTokenResDto } from './dtos/getToken.dto';
@@ -23,6 +24,7 @@ export class UserController {
     @Request() req,
   ): Promise<GetTokenResDto> {
     const token = req.headers['authorization']?.split('Bearer ')[1];
+
     const result = await this.userService.getOrCreate(userId, token);
     return {
       data: {

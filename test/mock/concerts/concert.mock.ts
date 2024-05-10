@@ -14,7 +14,7 @@ export class ConcertMock {
       this.concerts.push({
         id: i,
         name: `concert${i}`,
-        price: 10000,
+        price: 3000,
         maxSeats,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -26,8 +26,6 @@ export class ConcertMock {
     await this.prismaService.concert.createMany({
       data: this.concerts,
     });
-
-    console.log('insert concert : ' + this.concerts.length);
 
     return this.concerts;
   }
